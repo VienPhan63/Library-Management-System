@@ -1,30 +1,41 @@
-from registration.registration_request import RegistrationRequest
+from repositories.registration_request_repository import (
+    RegistrationRequestRepository
+)
+from models.registration_request import RequestStatus
 
-requests = [
-    RegistrationRequest(
-        1,
-        "Nguyen Van A",
-        "2004-01-01",
-        "Male",
-        "123456789",
-        "a@gmail.com",
-        "0901234567",
-        "123456"
-    )
-]
 
-def view_requests():
-    for req in requests:
-        print(
-            req.request_id,
-            req.full_name,
-            req.status
-        )
+class RegistrationManager:
 
-def view_request_detail(request_id):
-    for req in requests:
-        if req.request_id == request_id:
-            print("Name:", req.full_name)
-            print("Email:", req.email)
-            print("Phone:", req.phone)
-            print("Citizen ID")
+    def __init__(self, session):
+        self.repo = RegistrationRequestRepository(session)
+
+    def view_pending_requests(self):
+        return self.repo.get_pending_requests()
+
+    def view_request_detail(self, request_id):
+        return self.repo.get_by_id(request_id)
+
+    def approve_request(self, request_id):
+        request = self.repo.get_by_id(request_id)
+
+        if request is None:
+            return False
+
+        request.status = RequestStatus.APPROVED
+
+        self.repo.update()
+
+        return True
+
+    def reject_request(self, request_id, reason):
+        request = self.repo.get_by_id(request_id)
+
+        if request is None:
+            return False
+
+        request.status = RequestStatus.REJECTED
+        request.rejection_reason = reason
+
+        self.repo.update()
+
+        return True
