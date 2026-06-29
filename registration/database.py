@@ -1,1 +1,2 @@
-
+class Database:
+    pass
