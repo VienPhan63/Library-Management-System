@@ -1,5 +1,5 @@
-from .registration_manager import RegistrationManager
+from .registration_api import RegistrationAPI
 
 __all__ = [
-    "RegistrationManager",
+    "RegistrationAPI",
 ]
