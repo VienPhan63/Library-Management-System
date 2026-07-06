@@ -1,4 +1,4 @@
-from httpx import request
+
 
 from repositories.registration_request_repository import (
     RegistrationRequestRepository
