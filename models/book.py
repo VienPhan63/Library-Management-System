@@ -34,6 +34,8 @@ class Book(Base, TimestampMixin, IdMixin):
     description: Mapped[str] = mapped_column(String(100))
 
     quantity: Mapped[int] = mapped_column(Integer)
+    
+    price: Mapped[int] = mapped_column(Integer)
 
     available_quantity: Mapped[int] = mapped_column(Integer)
 

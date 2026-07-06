@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from models import RegistrationRequest
 from models.registration_request import RequestStatus
@@ -30,3 +30,9 @@ class RegistrationRequestRepository(
             RegistrationRequest.status == status
         )
         return list(self.session.scalars(stmt))
+    
+    def count_pending(self):
+        stmt = (select(func.count()).where(
+            RegistrationRequest.status == RequestStatus.PENDING
+        ))
+        return self.session.scalar(stmt)
