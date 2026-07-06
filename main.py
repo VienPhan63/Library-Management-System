@@ -1,7 +1,7 @@
-# from config.settings import settings
+from database.session import SessionLocal
+from registration.registration_api import RegistrationAPI
 
-# print(settings.DB_URL)
+session = SessionLocal()
+api = RegistrationAPI(session)
 
-from models import Book
-
-print(Book.__tablename__)
+print(api.get_pending_requests())
