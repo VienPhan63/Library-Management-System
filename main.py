@@ -82,6 +82,8 @@ from fastapi.requests import Request
 from api.registration_api import router as registration_router
 from api.book_api import router as book_router
 from api.report_api import router as report_router
+from api.librarian_api import router as librarian_router
+
 
 app = FastAPI()
 
@@ -99,6 +101,8 @@ templates = Jinja2Templates(directory="frontend")
 app.include_router(registration_router)
 app.include_router(book_router)
 app.include_router(report_router)
+app.include_router(librarian_router)
+
 
 
 @app.get("/")

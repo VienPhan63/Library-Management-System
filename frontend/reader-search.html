@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Search Books</title>
   <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .reader-search-filters .grow {
+      flex: 1 1 auto;
+    }
+
+    .reader-search-filters .compact-filter {
+      flex: 0 0 145px;
+      min-width: 130px;
+    }
+
+    #booksTable td:last-child {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
@@ -18,12 +32,8 @@
   </div>
 
   <nav class="side-nav">
-    <a href="#" data-page="dashboard">Dashboard</a>
-    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
     <a href="reader-search.html" data-page="search">Search Books</a>
-    <a href="librarian-registrations.html" data-page="registrations">Registrations</a>
-    <a href="librarian-books.html" data-page="books">Book Management</a>
-    <a href="borrow-books.html" data-page="borrow">Borrow & Return Books</a>
+    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
   </nav>
 
   <div class="side-user">
@@ -47,19 +57,19 @@
 
       <section class="panel">
         <h3>Search</h3>
-        <div class="filters">
+        <div class="filters reader-search-filters">
           <div class="input-icon grow">
             <span>⌕</span>
-            <input id="bookSearchInput" type="text" placeholder="Search by title or author..." />
+            <input id="bookSearchInput" type="text" placeholder="Search by code, title, publisher, author..." />
           </div>
-          <select id="genreFilter">
+          <select class="compact-filter" id="genreFilter">
             <option value="">All genres</option>
             <option>Technology</option>
             <option>Foreign Language</option>
             <option>Business</option>
             <option>Literature</option>
           </select>
-          <select id="categoryFilter">
+          <select class="compact-filter" id="categoryFilter">
             <option value="">All categories</option>
             <option>Available</option>
             <option>Borrowed</option>
@@ -84,7 +94,6 @@
                 <th>Year</th>
                 <th>Genre</th>
                 <th>Status</th>
-                <th>Detailed Description</th>
               </tr>
             </thead>
             <tbody id="booksTable"></tbody>
@@ -95,5 +104,40 @@
   </div>
 
   <script src="js/app.js"></script>
+  <script>
+    const searchInput = document.querySelector("#bookSearchInput");
+    const genreFilter = document.querySelector("#genreFilter");
+    const statusFilter = document.querySelector("#categoryFilter");
+
+    function searchReaderBooks() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const genre = genreFilter.value;
+      const status = statusFilter.value;
+
+      const results = books.filter((book) => {
+        const searchableText = [
+          book.code,
+          book.title,
+          book.publisher,
+          book.author,
+          book.year,
+          book.genre,
+          book.status
+        ].join(" ").toLowerCase();
+
+        const matchKeyword = keyword === "" || searchableText.includes(keyword);
+        const matchGenre = genre === "" || book.genre === genre;
+        const matchStatus = status === "" || book.status === status;
+
+        return matchKeyword && matchGenre && matchStatus;
+      });
+
+      renderReaderBooks(results);
+    }
+
+    searchInput.addEventListener("input", searchReaderBooks);
+    genreFilter.addEventListener("change", searchReaderBooks);
+    statusFilter.addEventListener("change", searchReaderBooks);
+  </script>
 </body>
 </html>
