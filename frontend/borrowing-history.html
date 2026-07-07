@@ -5,55 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Borrowing History</title>
   <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/reader.css" />
 </head>
 
-<body>
+<body class="reader-page reader-history-page">
   <div class="app-layout">
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="book-icon"></div>
+        <h2>Library Management System</h2>
+        <small id="roleText">Reader</small>
+      </div>
 
-<aside class="sidebar">
-  <div class="side-brand">
-    <div class="book-icon">▯</div>
-    <h2>Library Management System</h2>
-    <small id="roleText">Reader</small>
-  </div>
+      <nav class="side-nav">
+        <a href="reader-search.html">Search Books</a>
+        <a href="borrowing-history.html" class="active">Borrowing History</a>
+      </nav>
 
-  <nav class="side-nav">
-    <a href="reader-search.html" data-page="search">Search Books</a>
-    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
-  </nav>
+      <div class="side-user">
+        <div class="avatar">N</div>
+        <div>
+          <strong id="userName">Nguyen Van An</strong>
+          <small id="userRole">Reader</small>
+        </div>
+      </div>
 
-  <div class="side-user">
-    <div class="avatar">N</div>
-    <div>
-      <strong id="userName">Nguyen Van An</strong>
-      <small id="userRole">Reader</small>
-    </div>
-  </div>
-
-  <a class="logout" href="login.html">Logout</a>
-</aside>
+      <a class="logout" href="login.html">Log out</a>
+    </aside>
 
     <main class="content">
       <header class="page-head">
         <div>
           <h1>Borrowing History</h1>
-          <p>View and manage all your book borrowing activities at the library.</p>
+          <p>Borrowing History / View and manage all your book borrowing activities at the library.</p>
         </div>
       </header>
 
       <section class="stats-grid">
-        <div class="stat-card green"><small>Total Borrowed</small><strong>24</strong></div>
-        <div class="stat-card blue"><small>Current Borrowed</small><strong>02</strong></div>
-        <div class="stat-card red"><small>Overdue Books</small><strong>0</strong></div>
-        <div class="stat-card yellow"><small>Total Fine</small><strong>60.000 ₫</strong></div>
+        <div class="stat-card green"><small>Total Borrows</small><strong id="totalBorrows">0</strong></div>
+        <div class="stat-card blue"><small>Currently Borrowed</small><strong id="currentBorrows">0</strong></div>
+        <div class="stat-card red"><small>Overdue Books</small><strong id="overdueBooks">0</strong></div>
+        <div class="stat-card yellow"><small>Total Fines</small><strong id="totalFines">0 VND</strong></div>
       </section>
 
-      <section class="panel">
+      <section class="panel history-panel">
         <div class="section-title">
           <h3>Detailed List</h3>
           <div class="input-icon">
-            <span>⌕</span>
-            <input id="historySearch" type="text" placeholder="Search by title, date..." />
+            <span>Q</span>
+            <input id="historySearch" type="text" placeholder="Search by title, book ID..." />
           </div>
         </div>
 
@@ -70,13 +70,121 @@
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody id="historyTable"></tbody>
+            <tbody id="historyTable">
+              <tr><td colspan="7" class="empty-row">Loading borrowing history...</td></tr>
+            </tbody>
           </table>
+        </div>
+        <div class="table-footer">
+          <span id="historyCount">Showing 0 records</span>
         </div>
       </section>
     </main>
   </div>
 
-  <script src="js/app.js"></script>
+  <script>
+    const API_BASE = location.protocol === "file:" ? "http://127.0.0.1:8000" : "";
+    const readerId = localStorage.getItem("reader_id") || "";
+    const historyTable = document.querySelector("#historyTable");
+    const historySearch = document.querySelector("#historySearch");
+    const historyCount = document.querySelector("#historyCount");
+    let historyRows = [];
+
+    function formatDate(value) {
+      if (!value) return "-- Pending --";
+      const date = new Date(`${value}T00:00:00`);
+      return date.toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "numeric",
+      });
+    }
+
+    function formatMoney(value) {
+      return `${Number(value || 0).toLocaleString("vi-VN")} VND`;
+    }
+
+    function statusClass(status) {
+      if (status === "RETURNED") return "returned";
+      if (status === "OVERDUE") return "overdue";
+      return "borrowed";
+    }
+
+    function statusLabel(status) {
+      if (status === "RETURNED") return "Returned";
+      if (status === "OVERDUE") return "Overdue";
+      return "Borrowed";
+    }
+
+    function renderHistory(list) {
+      historyCount.textContent = `Showing ${list.length} records`;
+
+      if (!list.length) {
+        historyTable.innerHTML = '<tr><td colspan="7" class="empty-row">No borrowing records found.</td></tr>';
+        return;
+      }
+
+      historyTable.innerHTML = list.map((row) => {
+        const fineClass = Number(row.fine_amount || 0) > 0 ? "fine-danger" : "";
+        return `
+          <tr>
+            <td>${row.id}</td>
+            <td>${row.book_title || row.book_id}</td>
+            <td>${formatDate(row.borrow_date)}</td>
+            <td class="due-date">${formatDate(row.due_date)}</td>
+            <td>${formatDate(row.return_date)}</td>
+            <td class="${fineClass}">${formatMoney(row.fine_amount)}</td>
+            <td><span class="status ${statusClass(row.status)}">${statusLabel(row.status)}</span></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function applyHistoryFilter() {
+      const keyword = historySearch.value.trim().toLowerCase();
+      const filtered = historyRows.filter((row) => {
+        const searchable = [
+          row.id,
+          row.book_id,
+          row.book_title,
+          row.borrow_date,
+          row.due_date,
+          row.return_date,
+          row.status,
+          row.fine_amount,
+        ].join(" ").toLowerCase();
+        return !keyword || searchable.includes(keyword);
+      });
+      renderHistory(filtered);
+    }
+
+    async function loadSummary() {
+      const params = readerId ? `?reader_id=${encodeURIComponent(readerId)}` : "";
+      const response = await fetch(`${API_BASE}/borrow-records/summary${params}`);
+      if (!response.ok) return;
+
+      const summary = await response.json();
+      document.querySelector("#totalBorrows").textContent = summary.total_borrows || 0;
+      document.querySelector("#currentBorrows").textContent = String(summary.currently_borrowed || 0).padStart(2, "0");
+      document.querySelector("#overdueBooks").textContent = summary.overdue_books || 0;
+      document.querySelector("#totalFines").textContent = formatMoney(summary.total_fines);
+    }
+
+    async function loadHistory() {
+      try {
+        const params = readerId ? `?reader_id=${encodeURIComponent(readerId)}` : "";
+        const response = await fetch(`${API_BASE}/borrow-records/${params}`);
+        if (!response.ok) throw new Error("Could not load borrowing records");
+        historyRows = await response.json();
+        applyHistoryFilter();
+        loadSummary();
+      } catch (error) {
+        historyTable.innerHTML = '<tr><td colspan="7" class="empty-row">Cannot connect to the database.</td></tr>';
+      }
+    }
+
+    historySearch.addEventListener("input", applyHistoryFilter);
+    loadHistory();
+  </script>
 </body>
 </html>

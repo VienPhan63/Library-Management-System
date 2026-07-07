@@ -10,4 +10,12 @@ cryptography
 
 pydantic
 
+pydantic-settings
+
 typing_extensions
+
+fastapi
+
+uvicorn
+
+jinja2
