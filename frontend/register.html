@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Membership Card</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="auth-body">
+  <main class="auth-wrap register-wrap">
+    <div class="brand">
+      <div class="book-icon">▯</div>
+      <h1>Library Management System</h1>
+    </div>
+
+    <section class="register-card">
+      <div class="card-title">
+        <span>♙</span>
+        <div>
+          <h2>Register for a membership card</h2>
+          <p>Complete the form below to get your new membership card</p>
+        </div>
+      </div>
+
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="fullName">Full Name <b>*</b></label>
+          <div class="input-icon">
+            <span>♙</span>
+            <input id="fullName" type="text" placeholder="Type your full name" />
+          </div>
+          <small class="error"></small>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="dob">Date of Birth <b>*</b></label>
+            <div class="input-icon">
+              <span>▣</span>
+              <input id="dob" type="date" />
+            </div>
+            <small class="error"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="gender">Gender <b>*</b></label>
+            <select id="gender">
+              <option value="">Select gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
+            <small class="error"></small>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="idNumber">ID Card Number <b>*</b></label>
+            <div class="input-icon">
+              <span>▭</span>
+              <input id="idNumber" type="text" placeholder="Type your ID number" />
+            </div>
+            <small class="error"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number <b>*</b></label>
+            <div class="input-icon">
+              <span>☎</span>
+              <input id="phone" type="tel" placeholder="Type your phone number" />
+            </div>
+            <small class="error"></small>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email <b>*</b></label>
+          <div class="input-icon">
+            <span>✉</span>
+            <input id="email" type="email" placeholder="example@gmail.com" />
+          </div>
+          <small class="error"></small>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="password">Password <b>*</b></label>
+            <div class="input-icon">
+              <span>▢</span>
+              <input id="password" type="password" />
+            </div>
+            <small class="error"></small>
+          </div>
+
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password <b>*</b></label>
+            <div class="input-icon">
+              <span>▢</span>
+              <input id="confirmPassword" type="password" placeholder="Confirm Password" />
+            </div>
+            <small class="error"></small>
+          </div>
+        </div>
+
+        <label class="check-line">
+          <input id="agree" type="checkbox" />
+          <span>I certify that the information provided is accurate and agree to the system’s library card terms of use.</span>
+        </label>
+        <small class="error" id="agreeError"></small>
+
+        <button class="primary-btn" type="submit">Submit Registration</button>
+
+        <p class="notice">
+          “Your account will remain in ‘Pending’ status until confirmed by the Librarian.
+          You will receive a notification once approved.”
+        </p>
+      </form>
+
+      <div class="card-bottom">
+        Have an account? <a href="login.html">Log in</a>
+      </div>
+    </section>
+
+    <footer class="copyright">
+      © 2026 Library Management System. All rights reserved. | Terms of Service | Privacy Policy
+    </footer>
+  </main>
+
+  <script src="js/register.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registration Management</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="app-layout">
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="book-icon">▯</div>
+    <h2>Library Management System</h2>
+    <small id="roleText">Reader</small>
+  </div>
+
+  <nav class="side-nav">
+    <a href="#" data-page="dashboard">Dashboard</a>
+    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
+    <a href="reader-search.html" data-page="search">Search Books</a>
+    <a href="librarian-registrations.html" data-page="registrations">Registrations</a>
+    <a href="librarian-books.html" data-page="books">Book Management</a>
+    <a href="borrow-books.html" data-page="borrow">Borrow & Return Books</a>
+  </nav>
+
+  <div class="side-user">
+    <div class="avatar">N</div>
+    <div>
+      <strong id="userName">Nguyen Van An</strong>
+      <small id="userRole">Reader</small>
+    </div>
+  </div>
+
+  <a class="logout" href="login.html">Logout</a>
+</aside>
+
+    <main class="content">
+      <header class="page-head">
+        <a href="#" class="back-link">‹ Back to list</a>
+        <span class="status pending">Pending</span>
+      </header>
+
+      <section class="profile-grid">
+        <div class="panel">
+          <div class="profile-head">
+            <div class="avatar large">A</div>
+            <div>
+              <h2>Registration Profile Details</h2>
+              <p>Nguyen Van An • Requested 09:45 - 18/06/2026</p>
+            </div>
+          </div>
+
+          <h3>Personal Information</h3>
+          <div class="info-grid">
+            <div><small>Full Name</small><strong>Nguyen Van An</strong></div>
+            <div><small>Date of Birth</small><strong>09/05/2004</strong></div>
+            <div><small>Gender</small><strong>Male</strong></div>
+            <div><small>Membership</small><strong>Standard Membership Card</strong></div>
+          </div>
+
+          <h3>Contact Information</h3>
+          <div class="info-grid">
+            <div><small>Phone Number</small><strong>0912 345 678</strong></div>
+            <div><small>Email</small><strong>nguyenvana@gmail.com</strong></div>
+          </div>
+
+          <h3>Identity Documents</h3>
+          <div class="note-box">
+            <small>National ID Number</small>
+            <strong>0922004567</strong>
+            <p>Please verify this National ID number on the photo with the number entered in the registration form.</p>
+          </div>
+        </div>
+
+        <aside class="panel verify-card">
+          <h3>Profile Verification</h3>
+          <label><input type="checkbox" checked> Valid full name</label>
+          <label><input type="checkbox" checked> Valid & available email</label>
+          <label><input type="checkbox"> Valid & matching National ID</label>
+          <label><input type="checkbox" checked> Reachable phone number</label>
+
+          <button class="primary-btn" id="approveBtn">Approve Profile</button>
+          <button class="danger-btn" id="rejectBtn">Reject Request</button>
+          <p id="verifyMessage" class="notice"></p>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
