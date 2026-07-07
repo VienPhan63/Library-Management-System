@@ -5,82 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Search Books</title>
   <link rel="stylesheet" href="css/base.css" />
-  <style>
-    .reader-search-filters .grow {
-      flex: 1 1 auto;
-    }
-
-    .reader-search-filters .compact-filter {
-      flex: 0 0 145px;
-      min-width: 130px;
-    }
-
-    #booksTable td:last-child {
-      display: none;
-    }
-  </style>
+  <link rel="stylesheet" href="css/reader.css" />
 </head>
 
-<body>
+<body class="reader-page reader-search-page">
   <div class="app-layout">
+    <aside class="sidebar">
+      <div class="side-brand">
+        <div class="book-icon"></div>
+        <h2>Library Management System</h2>
+        <small id="roleText">Reader</small>
+      </div>
 
-<aside class="sidebar">
-  <div class="side-brand">
-    <div class="book-icon">▯</div>
-    <h2>Library Management System</h2>
-    <small id="roleText">Reader</small>
-  </div>
+      <nav class="side-nav">
+        <a href="reader-search.html" class="active">Search Books</a>
+        <a href="borrowing-history.html">Borrowing History</a>
+      </nav>
 
-  <nav class="side-nav">
-    <a href="reader-search.html" data-page="search">Search Books</a>
-    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
-  </nav>
+      <div class="side-user">
+        <div class="avatar">N</div>
+        <div>
+          <strong id="userName">Nguyen Van An</strong>
+          <small id="userRole">Reader</small>
+        </div>
+      </div>
 
-  <div class="side-user">
-    <div class="avatar">N</div>
-    <div>
-      <strong id="userName">Nguyen Van An</strong>
-      <small id="userRole">Reader</small>
-    </div>
-  </div>
-
-  <a class="logout" href="login.html">Logout</a>
-</aside>
+      <a class="logout" href="login.html">Log out</a>
+    </aside>
 
     <main class="content">
       <header class="page-head">
         <div>
           <h1>Search Books</h1>
-          <p>Discover the library’s knowledge repository with over 4,000 diverse titles.</p>
+          <p>Discover the library's knowledge repository with over 4,000 diverse titles.</p>
         </div>
       </header>
 
-      <section class="panel">
-        <h3>Search</h3>
-        <div class="filters reader-search-filters">
-          <div class="input-icon grow">
-            <span>⌕</span>
-            <input id="bookSearchInput" type="text" placeholder="Search by code, title, publisher, author..." />
-          </div>
-          <select class="compact-filter" id="genreFilter">
-            <option value="">All genres</option>
-            <option>Technology</option>
-            <option>Foreign Language</option>
-            <option>Business</option>
-            <option>Literature</option>
-          </select>
-          <select class="compact-filter" id="categoryFilter">
-            <option value="">All categories</option>
-            <option>Available</option>
-            <option>Borrowed</option>
-          </select>
+      <section class="panel search-panel">
+        <div class="filter-grid">
+          <label>Search
+            <div class="input-icon">
+              <span>Q</span>
+              <input id="bookSearchInput" type="text" placeholder="Search by title or author..." />
+            </div>
+          </label>
+          <label>Genre
+            <select id="genreFilter">
+              <option value="">All genres</option>
+            </select>
+          </label>
+          <label>Status
+            <select id="statusFilter">
+              <option value="">All statuses</option>
+              <option value="available">Available</option>
+              <option value="borrowed">Borrowed</option>
+            </select>
+          </label>
         </div>
       </section>
 
-      <section class="panel">
+      <section class="panel results-panel">
         <div class="section-title">
           <h3>Search Results</h3>
-          <span class="pill" id="resultCount">0 books</span>
+          <span class="pill" id="resultCount">0 results</span>
         </div>
 
         <div class="table-wrap">
@@ -94,50 +81,108 @@
                 <th>Year</th>
                 <th>Genre</th>
                 <th>Status</th>
+                <th>Detailed Description</th>
               </tr>
             </thead>
-            <tbody id="booksTable"></tbody>
+            <tbody id="booksTable">
+              <tr><td colspan="8" class="empty-row">Loading books...</td></tr>
+            </tbody>
           </table>
         </div>
       </section>
     </main>
   </div>
 
-  <script src="js/app.js"></script>
   <script>
+    const API_BASE = location.protocol === "file:" ? "http://127.0.0.1:8000" : "";
     const searchInput = document.querySelector("#bookSearchInput");
     const genreFilter = document.querySelector("#genreFilter");
-    const statusFilter = document.querySelector("#categoryFilter");
+    const statusFilter = document.querySelector("#statusFilter");
+    const booksTable = document.querySelector("#booksTable");
+    const resultCount = document.querySelector("#resultCount");
+    let databaseBooks = [];
 
-    function searchReaderBooks() {
+    function bookStatus(book) {
+      const hasCopies = Number(book.available_quantity || 0) > 0;
+      return book.status === "AVAILABLE" && hasCopies ? "available" : "borrowed";
+    }
+
+    function statusLabel(status) {
+      return status === "available" ? "Available" : "Borrowed";
+    }
+
+    function renderBooks(list) {
+      resultCount.textContent = `${list.length} results`;
+
+      if (!list.length) {
+        booksTable.innerHTML = '<tr><td colspan="8" class="empty-row">No books found.</td></tr>';
+        return;
+      }
+
+      booksTable.innerHTML = list.map((book) => {
+        const status = bookStatus(book);
+        return `
+          <tr>
+            <td>${book.id}</td>
+            <td>${book.title}</td>
+            <td>${book.publisher}</td>
+            <td>${book.author}</td>
+            <td>${book.publish_year}</td>
+            <td><span class="genre-tag">${book.category}</span></td>
+            <td><span class="status ${status}">${statusLabel(status)}</span></td>
+            <td>${book.description || ">"}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function applyFilters() {
       const keyword = searchInput.value.trim().toLowerCase();
       const genre = genreFilter.value;
       const status = statusFilter.value;
 
-      const results = books.filter((book) => {
-        const searchableText = [
-          book.code,
+      const filtered = databaseBooks.filter((book) => {
+        const searchable = [
+          book.id,
           book.title,
           book.publisher,
           book.author,
-          book.year,
-          book.genre,
-          book.status
+          book.publish_year,
+          book.category,
+          book.description,
         ].join(" ").toLowerCase();
 
-        const matchKeyword = keyword === "" || searchableText.includes(keyword);
-        const matchGenre = genre === "" || book.genre === genre;
-        const matchStatus = status === "" || book.status === status;
-
-        return matchKeyword && matchGenre && matchStatus;
+        return (!keyword || searchable.includes(keyword))
+          && (!genre || book.category === genre)
+          && (!status || bookStatus(book) === status);
       });
 
-      renderReaderBooks(results);
+      renderBooks(filtered);
     }
 
-    searchInput.addEventListener("input", searchReaderBooks);
-    genreFilter.addEventListener("change", searchReaderBooks);
-    statusFilter.addEventListener("change", searchReaderBooks);
+    function populateGenres() {
+      const genres = [...new Set(databaseBooks.map((book) => book.category).filter(Boolean))].sort();
+      genreFilter.innerHTML = '<option value="">All genres</option>' + genres
+        .map((genre) => `<option value="${genre}">${genre}</option>`)
+        .join("");
+    }
+
+    async function loadBooks() {
+      try {
+        const response = await fetch(`${API_BASE}/books/search/?keyword=`);
+        if (!response.ok) throw new Error("Could not load books");
+        databaseBooks = await response.json();
+        populateGenres();
+        applyFilters();
+      } catch (error) {
+        booksTable.innerHTML = '<tr><td colspan="8" class="empty-row">Cannot connect to the database.</td></tr>';
+      }
+    }
+
+    searchInput.addEventListener("input", applyFilters);
+    genreFilter.addEventListener("change", applyFilters);
+    statusFilter.addEventListener("change", applyFilters);
+    loadBooks();
   </script>
 </body>
 </html>
