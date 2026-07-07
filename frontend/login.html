@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Library Management System</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body class="auth-body">
+  <main class="auth-wrap auth-login">
+    <div class="brand">
+      <div class="book-icon">▯</div>
+      <h1>Library Management System</h1>
+    </div>
+
+    <section class="auth-card login-card">
+      <h2>Log In</h2>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="username">Username or Email</label>
+          <div class="input-icon">
+            <span>♙</span>
+            <input id="username" type="text" placeholder="Type your username or email" />
+          </div>
+          <small class="error" id="usernameError"></small>
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="password">Password</label>
+            <a href="#" class="muted-link">Forgot password?</a>
+          </div>
+          <div class="input-icon">
+            <span>▢</span>
+            <input id="password" type="password" placeholder="Type your password" />
+          </div>
+          <small class="error" id="passwordError"></small>
+        </div>
+
+        <button class="primary-btn" type="submit">Log In</button>
+
+        <p class="switch-page">
+          Don’t have an account? <a href="register.html">Sign up</a>
+        </p>
+      </form>
+    </section>
+
+    <div class="auth-footer">
+      <span>Secured Access</span>
+      <span>24/7 Support</span>
+    </div>
+  </main>
+
+  <script src="js/login.js"></script>
+</body>
+</html>
