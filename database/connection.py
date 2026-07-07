@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 
 from config.settings import settings
 
-DATABASE_URL = settings.DB_URL
+DATABASE_URL = settings.database_url
 
 engine = create_engine(
     DATABASE_URL,
