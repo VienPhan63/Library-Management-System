@@ -15,6 +15,10 @@ class LibrarianRepository(BaseRepository[Librarian]):
             Librarian.phone_number == phone
         )
         return self.session.scalar(stmt)
+    
+    def get_by_email(self, email: str) -> Librarian | None:
+        stmt = select(Librarian).where(Librarian.email == email)
+        return self.session.scalar(stmt)
 
     def search(self, keyword: str):
         stmt = select(Librarian).where(
