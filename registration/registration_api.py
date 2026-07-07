@@ -1,3 +1,5 @@
+
+
 from repositories.registration_request_repository import (
     RegistrationRequestRepository
 )
@@ -79,8 +81,7 @@ class RegistrationAPI:
 
         self.repo.update()
 
-        return True
-
+        return request
     def reject_request(self, request_id, reason):
 
         if not request_id:
