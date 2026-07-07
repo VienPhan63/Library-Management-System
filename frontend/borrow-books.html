@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Borrow Books</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="app-layout">
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="book-icon">▯</div>
+    <h2>Library Management System</h2>
+    <small id="roleText">Reader</small>
+  </div>
+
+  <nav class="side-nav">
+    <a href="#" data-page="dashboard">Dashboard</a>
+    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
+    <a href="reader-search.html" data-page="search">Search Books</a>
+    <a href="librarian-registrations.html" data-page="registrations">Registrations</a>
+    <a href="librarian-books.html" data-page="books">Book Management</a>
+    <a href="borrow-books.html" data-page="borrow">Borrow & Return Books</a>
+  </nav>
+
+  <div class="side-user">
+    <div class="avatar">N</div>
+    <div>
+      <strong id="userName">Nguyen Van An</strong>
+      <small id="userRole">Reader</small>
+    </div>
+  </div>
+
+  <a class="logout" href="login.html">Logout</a>
+</aside>
+
+    <main class="content">
+      <header class="page-head">
+        <div>
+          <h1>Borrow Books</h1>
+          <p>Manage new book borrowing transactions for readers.</p>
+        </div>
+        <a href="return-books.html" class="outline-btn">Return Books</a>
+      </header>
+
+      <section class="borrow-grid">
+        <div>
+          <section class="panel">
+            <h3>Verify Library Card</h3>
+            <div class="search-line">
+              <input placeholder="Type card ID">
+              <button class="primary-btn small">⌕</button>
+            </div>
+            <div class="reader-card">
+              <strong>Nguyen Thanh Ngan</strong>
+              <span class="status available">Active</span>
+              <p>Books currently borrowed: 2</p>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h3>Check Book Info</h3>
+            <div class="search-line">
+              <input placeholder="Search by title or book ID">
+              <button class="primary-btn small">⌕</button>
+            </div>
+            <div class="mini-book">Python Programming <span>Available</span></div>
+            <div class="mini-book">Business Chinese <span>Available</span></div>
+          </section>
+
+          <section class="panel">
+            <div class="section-title">
+              <h3>Added List</h3>
+              <button class="text-danger">Clear all</button>
+            </div>
+            <table>
+              <thead><tr><th>Book Code</th><th>Title</th><th>Author</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>T0009</td><td>Python Programming</td><td>Nguyen Van</td><td>×</td></tr>
+                <tr><td>FL002</td><td>Business Chinese</td><td>Yangchen</td><td>×</td></tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
+
+        <aside class="receipt panel">
+          <h3>Loan Receipt</h3>
+          <small>Automatically generated borrowing receipt.</small>
+          <hr>
+          <p><b>Card ID:</b> TCTL758</p>
+          <p><b>Borrower:</b> Nguyen Thanh Ngan</p>
+          <p><b>Borrow Date:</b> 02/07/2026</p>
+          <p><b>Due Date:</b> 16/07/2026</p>
+          <p><b>Total Books:</b> 2</p>
+          <button class="primary-btn">Create Receipt</button>
+          <div class="success-box">✓ Success!</div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

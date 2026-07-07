@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Return Books</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+  <div class="app-layout">
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="book-icon">▯</div>
+    <h2>Library Management System</h2>
+    <small id="roleText">Reader</small>
+  </div>
+
+  <nav class="side-nav">
+    <a href="#" data-page="dashboard">Dashboard</a>
+    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
+    <a href="reader-search.html" data-page="search">Search Books</a>
+    <a href="librarian-registrations.html" data-page="registrations">Registrations</a>
+    <a href="librarian-books.html" data-page="books">Book Management</a>
+    <a href="borrow-books.html" data-page="borrow">Borrow & Return Books</a>
+  </nav>
+
+  <div class="side-user">
+    <div class="avatar">N</div>
+    <div>
+      <strong id="userName">Nguyen Van An</strong>
+      <small id="userRole">Reader</small>
+    </div>
+  </div>
+
+  <a class="logout" href="login.html">Logout</a>
+</aside>
+
+    <main class="content">
+      <header class="page-head">
+        <div>
+          <h1>Return Books</h1>
+          <p>Process returned books, check condition, and collect overdue fees.</p>
+        </div>
+        <a href="borrow-books.html" class="outline-btn">Borrow Books</a>
+      </header>
+
+      <section class="grid-2 top-align">
+        <div class="panel">
+          <h3>Type Card ID</h3>
+          <input placeholder="VD: TCTL758">
+          <div class="reader-card">
+            <strong>Nguyen Thanh Ngan</strong>
+            <span class="status available">Active</span>
+            <p>Books currently borrowed: 2</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Check Loan Receipt</h3>
+          <input placeholder="Type receipt code">
+          <div class="mini-book">Python Programming <span>Due: 16/07/2026</span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h3>Book Condition List</h3>
+          <button class="danger-btn small">Add Report if available</button>
+        </div>
+        <table>
+          <thead><tr><th>Book Title</th><th>Borrowed Date</th><th>Due Date</th><th>Status</th><th>Book Condition</th><th>Fine</th></tr></thead>
+          <tbody>
+            <tr><td>Python Programming</td><td>02/07/2026</td><td>16/07/2026</td><td>On Time</td><td>Normal</td><td>0 ₫</td></tr>
+            <tr><td>Business Chinese</td><td>02/07/2026</td><td>16/07/2026</td><td><span class="status rejected">Overdue</span></td><td>Normal</td><td>+40.000 ₫</td></tr>
+            <tr><td>Database Management System</td><td>02/07/2026</td><td>16/07/2026</td><td>On Time</td><td>Damaged</td><td>0 ₫</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="borrow-grid">
+        <div class="panel note-box">
+          <h3>Business Rules</h3>
+          <p>Overdue fee: Automatically calculated by library regulation.</p>
+          <p>Damaged books: Handled according to library regulation.</p>
+        </div>
+
+        <aside class="panel receipt">
+          <h3>Fee Summary</h3>
+          <p>Overdue fee: <b>40.000đ</b></p>
+          <p>Damage fee: <b>20.000đ</b></p>
+          <h2>Total Fine: 65.000đ</h2>
+          <button class="primary-btn">Confirm Return of 3 Books</button>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
