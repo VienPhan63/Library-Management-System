@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration Details</title>
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/registration.css">
+</head>
+<body class="registration-page">
+  <div class="reg-shell">
+    <aside class="reg-sidebar">
+      <div class="reg-brand">
+        <div class="reg-book-icon"></div>
+        <h2>Library Management System</h2>
+      </div>
+
+      <nav class="reg-nav">
+        <a href="#">Dashboard</a>
+        <a href="librarian-registrations.html" class="active">Registrations</a>
+        <a href="librarian-books.html">Book Management</a>
+        <a href="borrow-books.html">Borrow & Return Books</a>
+        <a href="statistics-reports.html">Statistics & Reports</a>
+      </nav>
+
+      <div class="reg-user">
+        <div class="reg-user-avatar">T</div>
+        <div>
+          <strong>Tran Anh Thu</strong>
+          <small>Librarian</small>
+        </div>
+      </div>
+
+      <a class="reg-logout" href="login.html">Log out</a>
+    </aside>
+
+    <main class="reg-main">
+      <section id="listPage" class="reg-list-view">
+        <div class="reg-topline">
+          <div>
+            <h1>Registration Requests</h1>
+            <p>Choose a pending registration profile to review.</p>
+          </div>
+          <span class="reg-chip" id="pendingCount">0 requests</span>
+        </div>
+
+        <section class="reg-card">
+          <div class="reg-table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Request ID</th>
+                  <th>Full Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="registrationTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="detailPage" class="hidden">
+        <div class="reg-topline">
+          <button class="reg-back" type="button" id="backToList">Back to list</button>
+          <div class="reg-request-meta">
+            <span class="reg-status pending" id="detailStatus">Pending</span>
+            <span>Request created at: <b id="detailCreatedAt">-</b></span>
+          </div>
+        </div>
+
+        <section class="reg-profile-hero">
+          <div class="reg-profile-left">
+            <div class="reg-avatar-large" id="detailInitial">A</div>
+            <div>
+              <h1>Registration Profile Details</h1>
+              <p><span>Reader</span> <strong id="detailName">-</strong></p>
+              <small id="detailRequestId">Request ID: -</small>
+            </div>
+          </div>
+          <div class="reg-type">
+            <small>Registration Type</small>
+            <span>Standard Membership Card</span>
+          </div>
+        </section>
+
+        <div class="reg-detail-grid">
+          <div class="reg-detail-left">
+            <section class="reg-card">
+              <h2>Personal Information</h2>
+              <div class="reg-info-grid">
+                <div>
+                  <small>Full Name</small>
+                  <strong id="detailNameInfo">-</strong>
+                </div>
+                <div>
+                  <small>Date of Birth</small>
+                  <strong id="detailDateOfBirth">-</strong>
+                </div>
+                <div>
+                  <small>Gender</small>
+                  <strong id="detailGender">-</strong>
+                </div>
+                <div>
+                  <small>Password</small>
+                  <strong>************</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="reg-card">
+              <h2>Contact Information</h2>
+              <div class="reg-info-grid">
+                <div>
+                  <small>Phone Number</small>
+                  <strong id="detailPhone">-</strong>
+                </div>
+                <div>
+                  <small>Email</small>
+                  <strong id="detailEmail">-</strong>
+                </div>
+              </div>
+            </section>
+
+            <section class="reg-card">
+              <h2>Identity Documents (National ID)</h2>
+              <div class="reg-info-grid one">
+                <div>
+                  <small>National ID Number</small>
+                  <strong id="detailNationalId">-</strong>
+                </div>
+              </div>
+              <div class="reg-note">
+                <strong>Librarian Notes</strong>
+                <p>Please cross-check the National ID number on the photo with the number entered in the registration form. The photo must be clear, without glare, and with all corners visible.</p>
+              </div>
+            </section>
+          </div>
+
+          <aside class="reg-detail-right">
+            <section class="reg-card reg-verify">
+              <h2>Profile Verification</h2>
+              <p>Please check the boxes after manual verification.</p>
+              <label><input type="checkbox" checked> Valid full name</label>
+              <label><input type="checkbox" checked> Valid &amp; available email</label>
+              <label><input type="checkbox"> Valid &amp; matching National ID</label>
+              <label><input type="checkbox" checked> Reachable phone number</label>
+              <span id="verifyMessage"></span>
+            </section>
+
+            <section class="reg-card reg-actions">
+              <button class="reg-approve" type="button" id="approveBtn">Approve Profile</button>
+              <button class="reg-reject" type="button" id="rejectBtn">Reject Request</button>
+              <p>Approving this request will immediately issue a new library card to this user.</p>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section id="successPage" class="hidden reg-success-view">
+        <div class="reg-tabs">
+          <button class="active" type="button">Status: Approved</button>
+          <button type="button">Status: Rejected</button>
+        </div>
+
+        <section class="reg-success-card">
+          <div class="reg-success-mark">&#10003;</div>
+          <h1 id="successTitle">Approval Processed Successfully</h1>
+          <span class="reg-status approved" id="successStatus">APPROVED</span>
+          <p id="successMessage">Approved: The library card has been issued.</p>
+
+          <div class="reg-success-actions">
+            <button type="button">Print Receipt</button>
+            <button type="button">Resend Email</button>
+            <button type="button">Share</button>
+          </div>
+
+          <div class="reg-success-footer">
+            <button type="button" id="successBackBtn">Back to Request List</button>
+          </div>
+        </section>
+
+        <p class="reg-success-note">The system has updated the profile status in the database. Any further changes must be made in the Reader Management section.</p>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/registration.js"></script>
+</body>
+</html>

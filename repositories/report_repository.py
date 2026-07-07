@@ -7,6 +7,7 @@ from models import BorrowRecord
 
 from .base_repository import BaseRepository
 
+FINE_PER_DAY = 15000
 
 class ReportRepository(BaseRepository[Report]):
 
@@ -45,7 +46,7 @@ class ReportRepository(BaseRepository[Report]):
         stmt = (
             select(BorrowRecord)
             .where(
-                BorrowRecord.return_date != None,
+                BorrowRecord.return_date.isnot(None),
                 BorrowRecord.return_date >= start_date,
                 BorrowRecord.return_date <= end_date
             )
@@ -65,6 +66,6 @@ class ReportRepository(BaseRepository[Report]):
                     record.due_date
                 ).days
 
-                total_fine += overdue_days * 15000
+                total_fine += overdue_days * FINE_PER_DAY
 
         return total_fine

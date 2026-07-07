@@ -1,6 +1,6 @@
 from datetime import date
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 
 from models import BorrowRecord
 from models.borrow_record import BorrowStatus
@@ -37,3 +37,15 @@ class BorrowRecordRepository(BaseRepository[BorrowRecord]):
             BorrowRecord.status == BorrowStatus.BORROWED
         )
         return list(self.session.scalars(stmt))
+    
+    def count_borrowing(self):
+        stmt = (select(func.count()).where(
+            BorrowRecord.status == BorrowStatus.BORROWED
+        ))
+        return self.session.scalar(stmt)
+    
+    def count_returned(self):
+        stmt = (select(func.count()).where(
+            BorrowRecord.status == BorrowStatus.RETURNED
+        ))
+        return self.session.scalar(stmt)

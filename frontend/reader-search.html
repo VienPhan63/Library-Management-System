@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Books</title>
+  <link rel="stylesheet" href="css/base.css" />
+  <style>
+    .reader-search-filters .grow {
+      flex: 1 1 auto;
+    }
+
+    .reader-search-filters .compact-filter {
+      flex: 0 0 145px;
+      min-width: 130px;
+    }
+
+    #booksTable td:last-child {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app-layout">
+
+<aside class="sidebar">
+  <div class="side-brand">
+    <div class="book-icon">▯</div>
+    <h2>Library Management System</h2>
+    <small id="roleText">Reader</small>
+  </div>
+
+  <nav class="side-nav">
+    <a href="reader-search.html" data-page="search">Search Books</a>
+    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
+  </nav>
+
+  <div class="side-user">
+    <div class="avatar">N</div>
+    <div>
+      <strong id="userName">Nguyen Van An</strong>
+      <small id="userRole">Reader</small>
+    </div>
+  </div>
+
+  <a class="logout" href="login.html">Logout</a>
+</aside>
+
+    <main class="content">
+      <header class="page-head">
+        <div>
+          <h1>Search Books</h1>
+          <p>Discover the library’s knowledge repository with over 4,000 diverse titles.</p>
+        </div>
+      </header>
+
+      <section class="panel">
+        <h3>Search</h3>
+        <div class="filters reader-search-filters">
+          <div class="input-icon grow">
+            <span>⌕</span>
+            <input id="bookSearchInput" type="text" placeholder="Search by code, title, publisher, author..." />
+          </div>
+          <select class="compact-filter" id="genreFilter">
+            <option value="">All genres</option>
+            <option>Technology</option>
+            <option>Foreign Language</option>
+            <option>Business</option>
+            <option>Literature</option>
+          </select>
+          <select class="compact-filter" id="categoryFilter">
+            <option value="">All categories</option>
+            <option>Available</option>
+            <option>Borrowed</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-title">
+          <h3>Search Results</h3>
+          <span class="pill" id="resultCount">0 books</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Book Code</th>
+                <th>Title</th>
+                <th>Publisher</th>
+                <th>Author</th>
+                <th>Year</th>
+                <th>Genre</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="booksTable"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    const searchInput = document.querySelector("#bookSearchInput");
+    const genreFilter = document.querySelector("#genreFilter");
+    const statusFilter = document.querySelector("#categoryFilter");
+
+    function searchReaderBooks() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const genre = genreFilter.value;
+      const status = statusFilter.value;
+
+      const results = books.filter((book) => {
+        const searchableText = [
+          book.code,
+          book.title,
+          book.publisher,
+          book.author,
+          book.year,
+          book.genre,
+          book.status
+        ].join(" ").toLowerCase();
+
+        const matchKeyword = keyword === "" || searchableText.includes(keyword);
+        const matchGenre = genre === "" || book.genre === genre;
+        const matchStatus = status === "" || book.status === status;
+
+        return matchKeyword && matchGenre && matchStatus;
+      });
+
+      renderReaderBooks(results);
+    }
+
+    searchInput.addEventListener("input", searchReaderBooks);
+    genreFilter.addEventListener("change", searchReaderBooks);
+    statusFilter.addEventListener("change", searchReaderBooks);
+  </script>
+</body>
+</html>
