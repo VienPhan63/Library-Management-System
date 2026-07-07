@@ -1,36 +1,141 @@
 from datetime import date
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database.dependencies import get_db
-from repositories import BookRepository, BorrowRecordRepository
-from repositories.report_repository import ReportRepository
+
+from models import Report
+
+from repositories import (
+    ReportRepository,
+    BookRepository,
+    BorrowRecordRepository,
+    ReaderRepository,
+)
+
+from schemas.report import (
+    ReportCreate,
+    ReportResponse,
+)
 
 
 router = APIRouter(
     prefix="/reports",
-    tags=["Reports"],
+    tags=["Reports"]
 )
 
 
-@router.get("/summary")
-def get_report_summary(db: Session = Depends(get_db)):
+@router.post("/", response_model=ReportResponse)
+def create_report(
+    request: ReportCreate,
+    db: Session = Depends(get_db)
+):
+
+    report_repo = ReportRepository(db)
     book_repo = BookRepository(db)
     borrow_repo = BorrowRecordRepository(db)
-    report_repo = ReportRepository(db)
+    reader_repo = ReaderRepository(db)
 
-    books = book_repo.get_all()
 
-    return {
-        "total_titles": len(books),
-        "total_categories": len({book.category for book in books}),
-        "total_stock": sum(book.quantity for book in books),
-        "currently_borrowed": borrow_repo.count_borrowing(),
-        "total_returns": borrow_repo.count_returned(),
-        "total_borrows": borrow_repo.count(),
-        "total_fines": report_repo.get_total_fine(
-            start_date=date.min,
-            end_date=date.max,
-        ),
-    }
+    total_books = book_repo.count()
+
+
+    borrowed_books = borrow_repo.count_borrowing()
+
+
+    total_borrows = borrow_repo.count()
+
+
+    total_returns = borrow_repo.count_returned()
+
+
+    overdue_returns = len(
+        borrow_repo.get_overdue_records()
+    )
+
+
+    total_fine_amount = report_repo.get_total_fine(
+        start_date=request.start_date,
+        end_date=request.end_date
+    )
+
+
+    total_cards_issued = reader_repo.count()
+
+
+    active_readers = len(
+        reader_repo.get_active_readers()
+    )
+
+
+    report = Report(
+
+        report_type=request.report_type,
+
+        start_date=request.start_date,
+
+        end_date=request.end_date,
+
+        total_books=total_books,
+
+        borrowed_books=borrowed_books,
+
+        total_borrows=total_borrows,
+
+        total_returns=total_returns,
+
+        overdue_returns=overdue_returns,
+
+        total_fine_amount=total_fine_amount,
+
+        total_cards_issued=total_cards_issued,
+
+        active_readers=active_readers,
+
+        librarian_id=request.librarian_id
+
+    )
+
+
+    report_repo.create(report)
+
+    db.commit()
+
+    db.refresh(report)
+
+
+    return report
+
+
+
+@router.get("/", response_model=list[ReportResponse])
+def get_reports(
+    db: Session = Depends(get_db)
+):
+
+    repo = ReportRepository(db)
+
+    return repo.get_all()
+
+
+
+@router.get("/{report_id}", response_model=ReportResponse)
+def get_report(
+    report_id: str,
+    db: Session = Depends(get_db)
+):
+
+    repo = ReportRepository(db)
+
+    report = repo.get_by_id(report_id)
+
+
+    if not report:
+        raise HTTPException(
+            status_code=404,
+            detail="Report not found"
+        )
+
+
+    return report
