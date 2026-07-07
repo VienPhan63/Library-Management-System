@@ -1,123 +1,160 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Management</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css">
 </head>
-
-<body>
-  <div class="app-layout">
-
-<aside class="sidebar">
-  <div class="side-brand">
-    <div class="book-icon">▯</div>
-    <h2>Library Management System</h2>
-    <small id="roleText">Reader</small>
-  </div>
-
-  <nav class="side-nav">
-    <a href="#" data-page="dashboard">Dashboard</a>
-    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
-    <a href="reader-search.html" data-page="search">Search Books</a>
-    <a href="librarian-registrations.html" data-page="registrations">Registrations</a>
-    <a href="librarian-books.html" data-page="books">Book Management</a>
-    <a href="borrow-books.html" data-page="borrow">Borrow & Return Books</a>
-  </nav>
-
-  <div class="side-user">
-    <div class="avatar">N</div>
-    <div>
-      <strong id="userName">Nguyen Van An</strong>
-      <small id="userRole">Reader</small>
-    </div>
-  </div>
-
-  <a class="logout" href="login.html">Logout</a>
-</aside>
-
-    <main class="content">
-      <header class="page-head">
-        <div>
-          <h1>Management Books</h1>
-          <p>View and manage library book catalog.</p>
-        </div>
-        <button class="primary-btn small" id="openAddBook">+ Add New Books</button>
-      </header>
-
-      <section class="panel">
-        <h3>Search & Filter</h3>
-        <div class="filters">
-          <div class="input-icon grow">
-            <span>⌕</span>
-            <input id="manageSearch" type="text" placeholder="Search by name or ID" />
-          </div>
-          <select>
-            <option>All Genres</option>
-            <option>Technology</option>
-            <option>Business</option>
-          </select>
-          <select>
-            <option>All Statuses</option>
-            <option>Available</option>
-            <option>Out</option>
-          </select>
-        </div>
-      </section>
-
-      <section class="stats-grid two">
-        <div class="stat-card"><small>Completed Books</small><strong>4,000</strong></div>
-        <div class="stat-card"><small>Total Categories</small><strong>50</strong></div>
-      </section>
-
-      <section class="panel">
-        <div class="section-title">
-          <h2>Catalog</h2>
-          <span>Total: 4,000 books</span>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Book Code</th>
-                <th>Title</th>
-                <th>Author</th>
-                <th>Publisher</th>
-                <th>Year</th>
-                <th>Genre</th>
-                <th>Quantity</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="manageBooksTable"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <div class="modal" id="bookModal">
-        <form class="modal-card" id="addBookForm">
-          <div class="section-title">
-            <h2>Add New Book</h2>
-            <button type="button" class="icon-btn" id="closeModal">×</button>
-          </div>
-          <label>Book ID</label>
-          <input id="newBookCode" placeholder="Enter book code">
-          <label>Title</label>
-          <input id="newBookTitle" placeholder="Python Programming">
-          <label>Author</label>
-          <input id="newBookAuthor" placeholder="Nguyen Van">
-          <label>Genre</label>
-          <select id="newBookGenre"><option>Technology</option><option>Business</option><option>Literature</option></select>
-          <label>Quantity</label>
-          <input id="newBookQuantity" type="number" value="10">
-          <button class="primary-btn" type="submit">Save</button>
-        </form>
+<body class="ops-page">
+  <div class="ops-shell">
+    <aside class="reg-sidebar">
+      <div class="reg-brand">
+        <div class="reg-book-icon"></div>
+        <h2>Library Management System</h2>
       </div>
-    </main>
-  </div>
+      <nav class="reg-nav">
+        <a href="#">Dashboard</a>
+        <a href="librarian-registrations.html">Registrations</a>
+        <a href="librarian-books.html" class="active">Book Management</a>
+        <a href="borrow-books.html">Borrow & Return Books</a>
+        <a href="statistics-reports.html">Statistics & Reports</a>
+      </nav>
+      <div class="reg-user">
+        <div class="reg-user-avatar">T</div>
+        <div><strong>Tran Anh Thu</strong><small>Librarian</small></div>
+      </div>
+      <a class="reg-logout" href="login.html">Log out</a>
+    </aside>
 
+    <main class="ops-main">
+      <section id="bookCatalogView">
+        <header class="ops-header">
+          <div>
+            <h1>Management Books</h1>
+            <p>View and Manage Library Inventory</p>
+          </div>
+          <div class="ops-actions">
+            <button class="ops-outline" type="button" id="showCategoryView">Manage Category Books</button>
+            <button class="ops-primary" type="button" id="openBookEditor">Add New Books</button>
+          </div>
+        </header>
+
+        <section class="ops-filter">
+          <h2>Search &amp; Filter</h2>
+          <small>Search by Name or ID</small>
+          <div class="ops-filter-row">
+            <input placeholder="Search by book name or code">
+            <select><option>All Genres</option><option>Technology</option><option>Foreign Languages</option></select>
+            <select><option>All Statuses</option><option>Available</option><option>In Stock</option></select>
+            <select><option>All categories</option><option>Technology</option><option>Literature</option></select>
+            <button type="button">Filter</button>
+          </div>
+        </section>
+
+        <section class="ops-stats">
+          <article><span>Catalogized Books</span><strong data-stat="total_titles">0</strong></article>
+          <article><span>Total Categories</span><strong data-stat="total_categories">0</strong></article>
+        </section>
+
+        <section class="ops-card ops-table-card">
+          <div class="ops-card-title">
+            <div><h2>Catalog</h2><p>Total: <span data-stat="total_titles">0</span> books</p></div>
+            <button type="button">v</button>
+          </div>
+          <div class="ops-table-wrap">
+            <table>
+              <thead>
+                <tr><th>Book Code</th><th>Title</th><th>Author</th><th>Publisher</th><th>Year</th><th>Genre</th><th>Quantity</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="manageBooksTable">
+                <tr><td>TEC001</td><td>Python Programming</td><td>Huynh Viet</td><td>Science Publisher</td><td>2020</td><td><span class="ops-tag">Technology</span></td><td>90</td><td><span class="ops-pill green">Available</span></td><td><button class="ops-icon" type="button" data-edit-book>Edit</button><button class="ops-icon" type="button">Delete</button></td></tr>
+                <tr><td>FL002</td><td>Business Chinese</td><td>Yangdexin</td><td>Education Publisher</td><td>2018</td><td><span class="ops-tag">Foreign Languages</span></td><td>80</td><td><span class="ops-pill green">Available</span></td><td><button class="ops-icon" type="button" data-edit-book>Edit</button><button class="ops-icon" type="button">Delete</button></td></tr>
+                <tr><td>ECO003</td><td>Human Resource Management</td><td>Mai Ba Linh</td><td>Alpha Books</td><td>2016</td><td><span class="ops-tag">Economic</span></td><td>0</td><td><span class="ops-pill red">In Stock</span></td><td><button class="ops-icon" type="button" data-edit-book>Edit</button><button class="ops-icon" type="button">Delete</button></td></tr>
+                <tr><td>LIT004</td><td>The Adventures of a Cricket</td><td>To Hoai</td><td>Kim Dong Publisher</td><td>2003</td><td><span class="ops-tag">Literature</span></td><td>0</td><td><span class="ops-pill red">In Stock</span></td><td><button class="ops-icon" type="button" data-edit-book>Edit</button><button class="ops-icon" type="button">Delete</button></td></tr>
+                <tr><td>TEC006</td><td>Database Management System</td><td>Vo Van Binh</td><td>Science Publisher</td><td>2023</td><td><span class="ops-tag">Technology</span></td><td>150</td><td><span class="ops-pill green">In Stock</span></td><td><button class="ops-icon" type="button" data-edit-book>Edit</button><button class="ops-icon" type="button">Delete</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="ops-pagination"><span>Showing 1 - 5 of 4,000 books</span><div><button>&lt;</button><b>1</b><button>&gt;</button></div></div>
+        </section>
+      </section>
+
+      <section id="categoryView" class="hidden">
+        <header class="ops-header">
+          <div>
+            <h1>Manage Category Books</h1>
+            <p>Add, Edit, Delete, and Manage Book Categories</p>
+          </div>
+          <div class="ops-actions">
+            <button class="ops-outline" type="button" id="showBookView">Manage Books</button>
+            <button class="ops-primary" type="button">Add New Category</button>
+          </div>
+        </header>
+
+        <section class="ops-filter ops-category-filter">
+          <h2>Search &amp; Filter</h2>
+          <div class="ops-filter-row">
+            <input placeholder="Search by Category Name or Category ID">
+            <select><option>All</option><option>Active</option><option>Inactive</option></select>
+            <input type="date">
+            <input type="date">
+            <button type="button">Filter</button>
+          </div>
+        </section>
+
+        <section class="ops-card ops-table-card">
+          <div class="ops-card-title"><h2>Category List (5 Categories)</h2></div>
+          <div class="ops-table-wrap">
+            <table>
+              <thead><tr><th>Category Code</th><th>Category Name</th><th>Description</th><th>Status</th><th>Created Date</th><th>Updated Date</th><th>Number of Books</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td>TEC</td><td>Technology</td><td>Books on Programming, Mechanical Engineering, Electronics</td><td><span class="ops-pill soft">Active</span></td><td>01/10/2026</td><td>06/10/2026</td><td><span class="ops-count">4</span></td><td><button class="ops-icon">Edit</button><button class="ops-icon danger">Delete</button></td></tr>
+                <tr><td>LIT</td><td>Literature</td><td>Domestic and International Literary Works, Poetry</td><td><span class="ops-pill soft">Active</span></td><td>05/09/2026</td><td>09/09/2026</td><td><span class="ops-count">8</span></td><td><button class="ops-icon">Edit</button><button class="ops-icon danger">Delete</button></td></tr>
+                <tr><td>ECO</td><td>Economics</td><td>Finance, Business Administration, and Marketing</td><td><span class="ops-pill soft">Active</span></td><td>08/05/2026</td><td>06/06/2026</td><td><span class="ops-count">7</span></td><td><button class="ops-icon">Edit</button><button class="ops-icon danger">Delete</button></td></tr>
+                <tr><td>FL</td><td>Foreign Languages</td><td>English, Japanese, Korean, and French Learning Materials</td><td><span class="ops-pill soft">Active</span></td><td>05/04/2026</td><td>09/04/2026</td><td><span class="ops-count">13</span></td><td><button class="ops-icon">Edit</button><button class="ops-icon danger">Delete</button></td></tr>
+                <tr><td>ART</td><td>Arts</td><td>Painting, Music, Architecture, and Graphic Design</td><td><span class="ops-pill gray">Inactive</span></td><td>06/03/2026</td><td>09/04/2026</td><td><span class="ops-count">0</span></td><td><button class="ops-icon">Edit</button><button class="ops-icon danger">Delete</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="ops-pagination"><span>Displaying 5 of 50 Categories</span><div><button>Before</button><b>1</b><button>2</button><button>After</button></div></div>
+        </section>
+      </section>
+    </main>
+
+    <aside class="ops-editor hidden" id="bookEditor">
+      <div class="ops-actions editor-actions">
+        <button class="ops-outline" type="button" id="closeBookEditor">Manage Category Books</button>
+        <button class="ops-primary" type="button">Add New Category</button>
+      </div>
+      <section>
+        <h2>Basic Information</h2>
+        <label>ID<input value="B001" disabled></label>
+        <small>*Book Code cannot be changed to maintain data integrity</small>
+        <label>Title<input value="Python Programming"></label>
+        <div class="ops-editor-grid">
+          <label>Author<input value="Huynh Viet"></label>
+          <label>Genre<select><option>Technology</option></select></label>
+        </div>
+      </section>
+      <section>
+        <h2>Publish and Archive</h2>
+        <div class="ops-editor-grid">
+          <label>Publisher<input value="Science Publisher"></label>
+          <label>Year<input value="2020"></label>
+          <label>Total<input value="10"></label>
+          <label>Status<select><option>Available</option></select></label>
+        </div>
+      </section>
+      <div class="ops-editor-meta">Last Modified: 15:30, 06/05/2026<br>Performed By: Librarian</div>
+      <div class="ops-editor-footer">
+        <button type="button" id="cancelBookEditor">Cancel</button>
+        <button type="button">Save</button>
+      </div>
+    </aside>
+
+    <div class="ops-toast hidden" id="bookToast">Success! Book updated successfully</div>
+  </div>
   <script src="js/app.js"></script>
 </body>
 </html>

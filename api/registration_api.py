@@ -5,7 +5,11 @@ from database.dependencies import get_db
 
 from repositories import RegistrationRequestRepository
 
-from schemas.registration import RegisterRequest
+from schemas.registration import (
+    RegisterRequest,
+    RegistrationResponse,
+    RejectRegistrationRequest,
+)
 
 from models import RegistrationRequest
 from models.registration_request import RequestStatus
@@ -15,7 +19,7 @@ router = APIRouter(
     tags=["Registration"]
 )
 
-@router.post("/")
+@router.post("/", response_model=RegistrationResponse)
 def register(
     request: RegisterRequest,
     db: Session = Depends(get_db)
@@ -52,7 +56,7 @@ def register(
 
     return registration
 
-@router.get("/pending")
+@router.get("/pending", response_model=list[RegistrationResponse])
 def get_pending_requests(
     db: Session = Depends(get_db)
 ):
@@ -60,3 +64,93 @@ def get_pending_requests(
     repo = RegistrationRequestRepository(db)
 
     return repo.get_pending_requests()
+
+
+@router.get("/{request_id}", response_model=RegistrationResponse)
+def get_request_detail(
+    request_id: str,
+    db: Session = Depends(get_db)
+):
+
+    repo = RegistrationRequestRepository(db)
+
+    request = repo.get_by_id(request_id)
+
+    if not request:
+        raise HTTPException(
+            status_code=404,
+            detail="Registration request not found"
+        )
+
+    return request
+
+
+@router.patch("/{request_id}/approve", response_model=RegistrationResponse)
+def approve_request(
+    request_id: str,
+    db: Session = Depends(get_db)
+):
+
+    repo = RegistrationRequestRepository(db)
+
+    request = repo.get_by_id(request_id)
+
+    if not request:
+        raise HTTPException(
+            status_code=404,
+            detail="Registration request not found"
+        )
+
+    if request.status != RequestStatus.PENDING:
+        raise HTTPException(
+            status_code=400,
+            detail="Request has already been processed"
+        )
+
+    request.status = RequestStatus.APPROVED
+    request.rejection_reason = None
+
+    db.commit()
+    db.refresh(request)
+
+    return request
+
+
+@router.patch("/{request_id}/reject", response_model=RegistrationResponse)
+def reject_request(
+    request_id: str,
+    payload: RejectRegistrationRequest,
+    db: Session = Depends(get_db)
+):
+
+    reason = payload.reason.strip()
+
+    if not reason:
+        raise HTTPException(
+            status_code=400,
+            detail="Rejection reason is required"
+        )
+
+    repo = RegistrationRequestRepository(db)
+
+    request = repo.get_by_id(request_id)
+
+    if not request:
+        raise HTTPException(
+            status_code=404,
+            detail="Registration request not found"
+        )
+
+    if request.status != RequestStatus.PENDING:
+        raise HTTPException(
+            status_code=400,
+            detail="Request has already been processed"
+        )
+
+    request.status = RequestStatus.REJECTED
+    request.rejection_reason = reason
+
+    db.commit()
+    db.refresh(request)
+
+    return request

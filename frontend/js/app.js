@@ -179,3 +179,92 @@ setupBookSearch();
 setupHistorySearch();
 setupBookModal();
 setupApprovalButtons();
+
+function setupOperationsScreens() {
+  const bookView = document.querySelector("#bookCatalogView");
+  const categoryView = document.querySelector("#categoryView");
+  const showCategory = document.querySelector("#showCategoryView");
+  const showBooks = document.querySelector("#showBookView");
+  const editor = document.querySelector("#bookEditor");
+  const toast = document.querySelector("#bookToast");
+  const openEditor = document.querySelector("#openBookEditor");
+  const closeEditor = document.querySelector("#closeBookEditor");
+  const cancelEditor = document.querySelector("#cancelBookEditor");
+
+  showCategory?.addEventListener("click", () => {
+    bookView?.classList.add("hidden");
+    categoryView?.classList.remove("hidden");
+  });
+
+  showBooks?.addEventListener("click", () => {
+    categoryView?.classList.add("hidden");
+    bookView?.classList.remove("hidden");
+  });
+
+  function openBookEditor() {
+    editor?.classList.remove("hidden");
+    toast?.classList.remove("hidden");
+    window.setTimeout(() => toast?.classList.add("hidden"), 2200);
+  }
+
+  function closeBookEditor() {
+    editor?.classList.add("hidden");
+  }
+
+  openEditor?.addEventListener("click", openBookEditor);
+  document.querySelectorAll("[data-edit-book]").forEach((button) => {
+    button.addEventListener("click", openBookEditor);
+  });
+  closeEditor?.addEventListener("click", closeBookEditor);
+  cancelEditor?.addEventListener("click", closeBookEditor);
+}
+
+setupOperationsScreens();
+
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString("en-US");
+}
+
+function formatCurrency(value) {
+  return `${formatNumber(value)} VND`;
+}
+
+async function loadDatabaseStatistics() {
+  const statNodes = document.querySelectorAll("[data-stat]");
+  if (!statNodes.length) return;
+
+  try {
+    const response = await fetch("/reports/summary");
+    if (!response.ok) return;
+
+    const stats = await response.json();
+
+    statNodes.forEach((node) => {
+      const key = node.dataset.stat;
+      const value = stats[key] ?? 0;
+      node.textContent = node.dataset.format === "currency"
+        ? formatCurrency(value)
+        : formatNumber(value);
+    });
+
+    const borrowedNote = document.querySelector('[data-stat-note="currently_borrowed"]');
+    if (borrowedNote) {
+      const totalStock = Number(stats.total_stock || 0);
+      const borrowed = Number(stats.currently_borrowed || 0);
+      const percent = totalStock ? ((borrowed / totalStock) * 100).toFixed(1) : "0.0";
+      borrowedNote.textContent = `${percent}% of total stock`;
+    }
+
+    const returnsNote = document.querySelector('[data-stat-note="total_returns"]');
+    if (returnsNote) {
+      const totalBorrows = Number(stats.total_borrows || 0);
+      const totalReturns = Number(stats.total_returns || 0);
+      const percent = totalBorrows ? ((totalReturns / totalBorrows) * 100).toFixed(1) : "0.0";
+      returnsNote.textContent = `${percent}% completion rate`;
+    }
+  } catch (error) {
+    console.warn("Could not load database statistics", error);
+  }
+}
+
+loadDatabaseStatistics();

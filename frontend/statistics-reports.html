@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics & Reports</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="ops-page">
+  <div class="ops-shell">
+    <aside class="reg-sidebar">
+      <div class="reg-brand"><div class="reg-book-icon"></div><h2>Library Management System</h2></div>
+      <nav class="reg-nav">
+        <a href="#">Dashboard</a>
+        <a href="librarian-registrations.html">Registrations</a>
+        <a href="librarian-books.html">Book Management</a>
+        <a href="borrow-books.html">Borrow & Return Books</a>
+        <a href="statistics-reports.html" class="active">Statistics & Reports</a>
+      </nav>
+      <div class="reg-user"><div class="reg-user-avatar">T</div><div><strong>Tran Anh Thu</strong><small>Librarian</small></div></div>
+      <a class="reg-logout" href="login.html">Log out</a>
+    </aside>
+
+    <main class="ops-main reports-main">
+      <header class="ops-header reports-header">
+        <div>
+          <h1>Statistics & Reports</h1>
+          <p>Real-time analysis and reporting of library activities</p>
+        </div>
+        <button class="ops-primary" type="button">Export Report</button>
+      </header>
+
+      <section class="reports-filter">
+        <label>From Date<input type="text" value="05-05-2026"></label>
+        <label>To Date<input type="text" value="06-06-2026"></label>
+        <label>Report Type<select><option></option><option>Monthly</option></select></label>
+        <button type="button">Filter</button>
+        <button type="button">View Details</button>
+      </section>
+
+      <section class="report-kpis">
+        <article class="blue"><span>Total Titles</span><strong data-stat="total_titles">0</strong><small data-stat-note="total_titles">From database</small></article>
+        <article class="green"><span>Currently Borrowed</span><strong data-stat="currently_borrowed">0</strong><small data-stat-note="currently_borrowed">From stock quantity</small></article>
+        <article class="gray"><span>Total Borrows</span><strong data-stat="total_borrows">0</strong><small data-stat-note="total_borrows">Borrow records</small></article>
+        <article class="cream"><span>Total Returns</span><strong data-stat="total_returns">0</strong><small data-stat-note="total_returns">Returned records</small></article>
+        <article class="red"><span>Overdue Returns</span><strong data-stat="overdue_returns">0</strong><small data-stat-note="overdue_returns">Returned after due date</small></article>
+        <article class="yellow"><span>Total Fines</span><strong data-stat="total_fine_amount" data-format="currency">0 VND</strong><small data-stat-note="total_fine_amount">Calculated from overdue days</small></article>
+        <article class="blue"><span>Total Cards Issued</span><strong data-stat="total_cards_issued">0</strong><small data-stat-note="total_cards_issued">Approved registrations</small></article>
+        <article class="green"><span>Active Readers</span><strong data-stat="active_readers">0</strong><small data-stat-note="active_readers">Reader status active</small></article>
+      </section>
+
+      <section class="reports-grid">
+        <article class="report-card">
+          <h2>Book Statistics</h2>
+          <p>Library stock structure by popular topics.</p>
+          <div class="chart-box">
+            <div class="pie-chart"></div>
+            <div class="legend">
+              <span><i class="dot tech"></i>Technology</span>
+              <span><i class="dot lit"></i>Literature</span>
+              <span><i class="dot eco"></i>Economics</span>
+              <span><i class="dot fl"></i>Foreign Languages</span>
+              <span><i class="dot other"></i>Others</span>
+            </div>
+          </div>
+          <button class="report-detail">View Detailed Data Table</button>
+        </article>
+
+        <article class="report-card">
+          <h2>Borrowing & Returning Statistics</h2>
+          <p>Number of transactions by month.</p>
+          <div class="chart-box bar-box">
+            <div class="bar-legend"><span><i class="dot tech"></i>Borrows</span><span><i class="dot lit"></i>Returns</span></div>
+            <div class="bar-chart">
+              <span style="--h1:40%;--h2:25%">Jan</span>
+              <span style="--h1:30%;--h2:14%">Feb</span>
+              <span style="--h1:20%;--h2:98%">Mar</span>
+              <span style="--h1:28%;--h2:40%">Apr</span>
+              <span style="--h1:18%;--h2:48%">May</span>
+              <span style="--h1:25%;--h2:38%">Jun</span>
+            </div>
+          </div>
+          <button class="report-detail">View Detailed Data Table</button>
+        </article>
+
+        <article class="report-card">
+          <h2>Fine Statistics</h2>
+          <p>Total fines collected due to overdue books.</p>
+          <div class="chart-box fine-box">
+            <div class="fine-chart">
+              <span style="--h:35%">Jan</span>
+              <span style="--h:22%">Feb</span>
+              <span style="--h:45%">Mar</span>
+              <span style="--h:62%">Apr</span>
+              <span style="--h:88%">May</span>
+            </div>
+            <div class="legend"><span><i class="dot tech"></i>Current Month</span><span><i class="dot gray-dot"></i>Previous Months</span></div>
+          </div>
+          <button class="report-detail">View Detailed Data Table</button>
+        </article>
+
+        <article class="report-card">
+          <h2>Reader Statistics</h2>
+          <p>Percentage of reader groups borrowing books.</p>
+          <div class="chart-box donut-box">
+            <div class="donut-chart"></div>
+            <div class="donut-legend">
+              <span><i class="dot tech"></i>Students</span>
+              <span><i class="dot lit"></i>Lecturers</span>
+              <span><i class="dot eco"></i>Others</span>
+            </div>
+          </div>
+          <button class="report-detail">View Detailed Data Table</button>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script src="js/app.js"></script>
+</body>
+</html>

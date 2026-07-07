@@ -1,102 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Return Books</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css">
 </head>
+<body class="ops-page">
+  <div class="ops-shell">
+    <aside class="reg-sidebar">
+      <div class="reg-brand"><div class="reg-book-icon"></div><h2>Library Management System</h2></div>
+      <nav class="reg-nav">
+        <a href="#">Dashboard</a>
+        <a href="librarian-registrations.html">Registrations</a>
+        <a href="librarian-books.html">Book Management</a>
+        <a href="borrow-books.html" class="active">Borrow & Return Books</a>
+        <a href="statistics-reports.html">Statistics & Reports</a>
+      </nav>
+      <div class="reg-user"><div class="reg-user-avatar">T</div><div><strong>Tran Anh Thu</strong><small>Librarian</small></div></div>
+      <a class="reg-logout" href="login.html">Log out</a>
+    </aside>
 
-<body>
-  <div class="app-layout">
-
-<aside class="sidebar">
-  <div class="side-brand">
-    <div class="book-icon">▯</div>
-    <h2>Library Management System</h2>
-    <small id="roleText">Reader</small>
-  </div>
-
-  <nav class="side-nav">
-    <a href="#" data-page="dashboard">Dashboard</a>
-    <a href="borrowing-history.html" data-page="history">Borrowing History</a>
-    <a href="reader-search.html" data-page="search">Search Books</a>
-    <a href="librarian-registrations.html" data-page="registrations">Registrations</a>
-    <a href="librarian-books.html" data-page="books">Book Management</a>
-    <a href="borrow-books.html" data-page="borrow">Borrow & Return Books</a>
-  </nav>
-
-  <div class="side-user">
-    <div class="avatar">N</div>
-    <div>
-      <strong id="userName">Nguyen Van An</strong>
-      <small id="userRole">Reader</small>
-    </div>
-  </div>
-
-  <a class="logout" href="login.html">Logout</a>
-</aside>
-
-    <main class="content">
-      <header class="page-head">
-        <div>
-          <h1>Return Books</h1>
-          <p>Process returned books, check condition, and collect overdue fees.</p>
-        </div>
-        <a href="borrow-books.html" class="outline-btn">Borrow Books</a>
+    <main class="ops-main">
+      <header class="ops-header">
+        <div><h1>Return Books</h1><p>Process returned books, check condition, and collect overdue fees.</p></div>
+        <a href="borrow-books.html" class="ops-outline">Borrow Books</a>
       </header>
 
-      <section class="grid-2 top-align">
-        <div class="panel">
-          <h3>Type Card ID</h3>
-          <input placeholder="VD: TCTL758">
-          <div class="reader-card">
-            <strong>Nguyen Thanh Ngan</strong>
-            <span class="status available">Active</span>
+      <section class="return-top">
+        <section class="ops-card return-search-card">
+          <h2>Type Card ID</h2>
+          <small>Search by card ID</small>
+          <div class="loan-search"><input placeholder="NTN080124"><button>⊙</button></div>
+          <div class="loan-reader">
+            <div><strong>Nguyen Thanh Ngan</strong><span class="ops-pill soft">Active</span></div>
+            <p>Card ID: NTN080124</p>
             <p>Books currently borrowed: 2</p>
+            <b>Overdue books: 0</b>
           </div>
-        </div>
-
-        <div class="panel">
-          <h3>Check Loan Receipt</h3>
-          <input placeholder="Type receipt code">
-          <div class="mini-book">Python Programming <span>Due: 16/07/2026</span></div>
-        </div>
+        </section>
+        <section class="ops-card return-search-card">
+          <h2>Check Loan Receipt</h2>
+          <small>Type receipt ID</small>
+          <input placeholder="TECFL012">
+          <div class="return-receipt-mini"><span>▣</span><div><strong>Python Programming</strong><p>Book ID: TEC001</p><p>Borrowed Date: 12/05/2026</p></div></div>
+        </section>
       </section>
 
-      <section class="panel">
-        <div class="section-title">
-          <h3>Book Condition List</h3>
-          <button class="danger-btn small">Add Report if available</button>
-        </div>
+      <section class="ops-card return-condition">
+        <div class="ops-card-title"><div><h2>Book Condition List</h2><p>Confirm condition and calculate fees for 3 books.</p></div><button class="ops-alert">Action Required: if applicable</button></div>
         <table>
-          <thead><tr><th>Book Title</th><th>Borrowed Date</th><th>Due Date</th><th>Status</th><th>Book Condition</th><th>Fine</th></tr></thead>
+          <thead><tr><th>Book Info</th><th>Borrowed Date</th><th>Due Date</th><th>Status</th><th>Book Condition</th><th>Fine</th></tr></thead>
           <tbody>
-            <tr><td>Python Programming</td><td>02/07/2026</td><td>16/07/2026</td><td>On Time</td><td>Normal</td><td>0 ₫</td></tr>
-            <tr><td>Business Chinese</td><td>02/07/2026</td><td>16/07/2026</td><td><span class="status rejected">Overdue</span></td><td>Normal</td><td>+40.000 ₫</td></tr>
-            <tr><td>Database Management System</td><td>02/07/2026</td><td>16/07/2026</td><td>On Time</td><td>Damaged</td><td>0 ₫</td></tr>
+            <tr><td><strong>Python Programming</strong><br>TECFL001</td><td>12/05/2026</td><td>26/05/2026</td><td><span class="ops-pill gray">On Time</span></td><td><select><option>Normal</option></select></td><td>0 VND</td></tr>
+            <tr><td><strong>Business Chinese</strong><br>TECFL012</td><td>01/06/2026</td><td>25/06/2026</td><td><span class="ops-pill red">Overdue</span></td><td><select><option>Normal</option></select></td><td><b class="ops-red">+60,000 VND</b></td></tr>
+            <tr><td><strong>Database Management System</strong><br>TECFL012</td><td>15/06/2026</td><td>19/06/2026</td><td><span class="ops-pill gray">On Time</span></td><td><select><option>Damaged</option></select></td><td>0 VND</td></tr>
           </tbody>
         </table>
       </section>
 
-      <section class="borrow-grid">
-        <div class="panel note-box">
-          <h3>Business Rules</h3>
-          <p>Overdue fee: Automatically calculated by library regulation.</p>
-          <p>Damaged books: Handled according to library regulation.</p>
-        </div>
-
-        <aside class="panel receipt">
-          <h3>Fee Summary</h3>
-          <p>Overdue fee: <b>40.000đ</b></p>
-          <p>Damage fee: <b>20.000đ</b></p>
-          <h2>Total Fine: 65.000đ</h2>
-          <button class="primary-btn">Confirm Return of 3 Books</button>
+      <section class="return-bottom">
+        <div class="ops-note"><strong>Business Notes</strong><p>Overdue fine: Handled according to library regulations.</p><p>Damaged books: Handled according to library regulations.</p></div>
+        <aside class="return-fee">
+          <h2>Fee Summary</h2>
+          <p>Overdue fee <b>60,000 VND</b></p>
+          <p>Damage fee <b>25,000 VND</b></p>
+          <h3>Total Fine <strong>85,000 VND</strong></h3>
+          <button>Confirm Return of 3 Books</button>
+          <small>Librarian clicks confirm after successfully collecting fines.</small>
         </aside>
       </section>
     </main>
   </div>
-
   <script src="js/app.js"></script>
 </body>
 </html>
