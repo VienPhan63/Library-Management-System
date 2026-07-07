@@ -22,6 +22,15 @@ class Librarian(Base, TimestampMixin, IdMixin):
     full_name: Mapped[str] = mapped_column(String(30))
     phone_number: Mapped[str] = mapped_column(String(10))
 
+    email: Mapped[str] = mapped_column(
+        String(50),
+        unique=True
+    )
+
+    password: Mapped[str] = mapped_column(
+        String(255)
+    )
+
     books: Mapped[List["Book"]] = relationship(
         back_populates="librarian",
         cascade="all, delete-orphan"
