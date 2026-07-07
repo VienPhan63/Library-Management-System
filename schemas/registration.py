@@ -1,5 +1,5 @@
 
-from datetime import datetime
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -12,6 +12,8 @@ class RegisterRequest(BaseModel):
     password: str
     phone_number: str
     gender: str
+    date_of_birth: date | None = None
+    national_id: str | None = None
 
 
 class RejectRegistrationRequest(BaseModel):
@@ -24,6 +26,8 @@ class RegistrationResponse(BaseModel):
     email: str
     phone_number: str
     gender: str
+    date_of_birth: date | None = None
+    national_id: str | None = None
     request_date: datetime | None = None
     status: RequestStatus
     rejection_reason: str | None = None

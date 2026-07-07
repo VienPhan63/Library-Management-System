@@ -37,6 +37,8 @@ class RegistrationRequest(Base, TimestampMixin, IdMixin):
     )
     phone_number: Mapped[str] = mapped_column(String(10))
     gender: Mapped[str] = mapped_column(String(10))
+    date_of_birth: Mapped[date | None] = mapped_column(Date)
+    national_id: Mapped[str | None] = mapped_column(String(20))
 
     request_date: Mapped[date] = mapped_column(
     DateTime,

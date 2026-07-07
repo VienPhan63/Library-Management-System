@@ -46,6 +46,10 @@ def register(
 
         gender=request.gender,
 
+        date_of_birth=request.date_of_birth,
+
+        national_id=request.national_id,
+
         status=RequestStatus.PENDING
 
     )

@@ -80,6 +80,8 @@ function renderDetail(request) {
   document.getElementById("detailEmail").textContent = request.email;
   document.getElementById("detailPhone").textContent = request.phone_number;
   document.getElementById("detailGender").textContent = request.gender;
+  document.getElementById("detailDateOfBirth").textContent = request.date_of_birth || "-";
+  document.getElementById("detailNationalId").textContent = request.national_id || "-";
   document.getElementById("verifyMessage").textContent = "";
 
   showPage("detailPage");
