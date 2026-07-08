@@ -7,6 +7,30 @@ function showPage(pageId) {
   });
 }
 
+function resetDetailView() {
+  const fields = [
+    "detailStatus",
+    "detailCreatedAt",
+    "detailName",
+    "detailNameInfo",
+    "detailInitial",
+    "detailRequestId",
+    "detailEmail",
+    "detailPhone",
+    "detailGender",
+    "detailDateOfBirth",
+    "detailNationalId",
+  ];
+
+  fields.forEach((id) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = id === "detailInitial" ? "R" : "-";
+  });
+
+  const verifyMessage = document.getElementById("verifyMessage");
+  if (verifyMessage) verifyMessage.textContent = "";
+}
+
 function formatDate(value) {
   if (!value) return "-";
   return new Date(value).toLocaleString();
@@ -25,9 +49,9 @@ async function requestJson(url, options = {}) {
   const response = await fetch(url, {
     headers: {
       "Content-Type": "application/json",
-      ...(options.headers || {})
+      ...(options.headers || {}),
     },
-    ...options
+    ...options,
   });
 
   if (!response.ok) {
@@ -45,21 +69,22 @@ async function loadPendingRegistrations() {
 
   try {
     const registrations = await requestJson("/registrations/pending");
-
-    tbody.innerHTML = registrations.map((request) => `
-      <tr>
-        <td>${escapeHtml(request.id)}</td>
-        <td>${escapeHtml(request.full_name)}</td>
-        <td>${escapeHtml(request.email)}</td>
-        <td>${escapeHtml(request.phone_number)}</td>
-        <td><span class="status borrowed">${escapeHtml(request.status)}</span></td>
-        <td><button class="outline-btn small" type="button" data-request-id="${escapeHtml(request.id)}">View</button></td>
-      </tr>
-    `).join("");
-
-    if (!registrations.length) {
-      tbody.innerHTML = `<tr><td colspan="6">No pending registrations.</td></tr>`;
-    }
+    tbody.innerHTML = registrations.length
+      ? registrations
+          .map(
+            (request) => `
+          <tr>
+            <td>${escapeHtml(request.id)}</td>
+            <td>${escapeHtml(request.full_name)}</td>
+            <td>${escapeHtml(request.email)}</td>
+            <td>${escapeHtml(request.phone_number)}</td>
+            <td><span class="status borrowed">${escapeHtml(request.status)}</span></td>
+            <td><button class="outline-btn small" type="button" data-request-id="${escapeHtml(request.id)}">View</button></td>
+          </tr>
+        `,
+          )
+          .join("")
+      : '<tr><td colspan="6">No pending registrations.</td></tr>';
 
     if (count) count.textContent = `${registrations.length} requests`;
   } catch (error) {
@@ -71,24 +96,35 @@ async function loadPendingRegistrations() {
 function renderDetail(request) {
   currentRequest = request;
 
-  document.getElementById("detailStatus").textContent = request.status;
-  document.getElementById("detailCreatedAt").textContent = formatDate(request.request_date);
-  document.getElementById("detailName").textContent = request.full_name;
-  document.getElementById("detailNameInfo").textContent = request.full_name;
-  document.getElementById("detailInitial").textContent = request.full_name.trim().charAt(0).toUpperCase() || "R";
-  document.getElementById("detailRequestId").textContent = `Request ID: ${request.id}`;
-  document.getElementById("detailEmail").textContent = request.email;
-  document.getElementById("detailPhone").textContent = request.phone_number;
-  document.getElementById("detailGender").textContent = request.gender;
-  document.getElementById("detailDateOfBirth").textContent = request.date_of_birth || "-";
-  document.getElementById("detailNationalId").textContent = request.national_id || "-";
+  document.getElementById("detailStatus").textContent =
+    request.status || "PENDING";
+  document.getElementById("detailCreatedAt").textContent = formatDate(
+    request.request_date,
+  );
+  document.getElementById("detailName").textContent = request.full_name || "-";
+  document.getElementById("detailNameInfo").textContent =
+    request.full_name || "-";
+  document.getElementById("detailInitial").textContent =
+    request.full_name?.trim().charAt(0).toUpperCase() || "R";
+  document.getElementById("detailRequestId").textContent =
+    `Request ID: ${request.id || "-"}`;
+  document.getElementById("detailEmail").textContent = request.email || "-";
+  document.getElementById("detailPhone").textContent =
+    request.phone_number || "-";
+  document.getElementById("detailGender").textContent = request.gender || "-";
+  document.getElementById("detailDateOfBirth").textContent =
+    request.date_of_birth || "-";
+  document.getElementById("detailNationalId").textContent =
+    request.national_id || "-";
   document.getElementById("verifyMessage").textContent = "";
 
   showPage("detailPage");
 }
 
 async function openRequestDetail(requestId) {
-  const request = await requestJson(`/registrations/${encodeURIComponent(requestId)}`);
+  const request = await requestJson(
+    `/registrations/${encodeURIComponent(requestId)}`,
+  );
   renderDetail(request);
 }
 
@@ -120,9 +156,8 @@ async function approveCurrentRequest() {
 
   const request = await requestJson(
     `/registrations/${encodeURIComponent(currentRequest.id)}/approve`,
-    { method: "PATCH" }
+    { method: "PATCH" },
   );
-
   renderSuccess(request);
 }
 
@@ -136,35 +171,39 @@ async function rejectCurrentRequest() {
     `/registrations/${encodeURIComponent(currentRequest.id)}/reject`,
     {
       method: "PATCH",
-      body: JSON.stringify({ reason })
-    }
+      body: JSON.stringify({ reason }),
+    },
   );
 
   renderSuccess(request);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const table = document.getElementById("registrationTable");
+  resetDetailView();
 
-  table?.addEventListener("click", async (event) => {
-    const button = event.target.closest("[data-request-id]");
-    if (!button) return;
+  document
+    .getElementById("registrationTable")
+    ?.addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-request-id]");
+      if (!button) return;
 
-    try {
-      await openRequestDetail(button.dataset.requestId);
-    } catch (error) {
-      alert(error.message);
-    }
-  });
+      try {
+        await openRequestDetail(button.dataset.requestId);
+      } catch (error) {
+        alert(error.message);
+      }
+    });
 
-  document.getElementById("backToList")?.addEventListener("click", () => {
-    showPage("listPage");
-  });
+  document
+    .getElementById("backToList")
+    ?.addEventListener("click", () => showPage("listPage"));
 
-  document.getElementById("successBackBtn")?.addEventListener("click", async () => {
-    showPage("listPage");
-    await loadPendingRegistrations();
-  });
+  document
+    .getElementById("successBackBtn")
+    ?.addEventListener("click", async () => {
+      showPage("listPage");
+      await loadPendingRegistrations();
+    });
 
   document.getElementById("approveBtn")?.addEventListener("click", async () => {
     try {
