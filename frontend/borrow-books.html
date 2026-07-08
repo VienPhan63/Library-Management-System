@@ -34,56 +34,69 @@
           <div class="loan-top-grid">
             <section class="ops-card loan-card">
               <h2>Verify Library Card</h2>
-              <small>Search by card ID</small>
-              <div class="loan-search"><input placeholder="VD: NTN080124"><button>⌕</button></div>
-              <div class="loan-reader">
-                <div><strong>Nguyen Thanh Ngan</strong><span class="ops-pill soft">Active</span></div>
-                <p>Card ID: NTN080124</p>
-                <p>Books currently borrowed: 2</p>
+              <small>Search by card ID or reader ID</small>
+              <div class="loan-search">
+                <input id="borrowReaderInput" placeholder="VD: NTN080124">
+                <button id="borrowReaderSearch" type="button">Search</button>
+              </div>
+              <div class="loan-reader" id="borrowReaderInfo">
+                <div><strong>No reader selected</strong><span class="ops-pill gray">Waiting</span></div>
+                <p>Card ID: -</p>
+                <p>Books currently borrowed: 0</p>
                 <b>Overdue books: 0</b>
               </div>
             </section>
 
             <section class="ops-card loan-card">
               <h2>Check Book Info</h2>
-              <small>Search by title or book ID</small>
-              <div class="loan-search"><input placeholder="Python"><button>⌕</button></div>
-              <div class="loan-mini-book"><div><strong>Python Programming</strong><p>Author: Huynh Viet | ID: TEC001</p><span class="ops-pill soft">In Stock</span></div><button>+</button></div>
-              <div class="loan-mini-book"><div><strong>Business Chinese</strong><p>Author: Yangdexin | ID: FL002</p><span class="ops-pill soft">In Stock</span></div><button>+</button></div>
+              <small>Search by title, author, or book ID</small>
+              <div class="loan-search">
+                <input id="borrowBookInput" placeholder="Python">
+                <button id="borrowBookSearch" type="button">Search</button>
+              </div>
+              <div id="borrowBookResults">
+                <div class="loan-mini-book"><div><strong>Search books from database</strong><p>Enter a title, author, or book ID.</p><span class="ops-pill gray">Waiting</span></div><button type="button" disabled>+</button></div>
+              </div>
             </section>
           </div>
 
           <section class="ops-card loan-added">
-            <div class="ops-card-title"><div><h2>Added List</h2><p>2 books selected</p></div><button class="ops-danger-text">Clear All</button></div>
+            <div class="ops-card-title">
+              <div><h2>Added List</h2><p id="borrowSelectedCount">0 books selected</p></div>
+              <button class="ops-danger-text" id="borrowClearAll" type="button">Clear All</button>
+            </div>
             <table>
               <thead><tr><th>Book Code</th><th>Title</th><th>Author</th><th>Actions</th></tr></thead>
-              <tbody>
-                <tr><td>TEC001</td><td>Python Programming</td><td>Huynh Viet</td><td><button class="ops-icon danger">⌫</button></td></tr>
-                <tr><td>FL002</td><td>Business Chinese</td><td>Yangdexin</td><td><button class="ops-icon danger">⌫</button></td></tr>
+              <tbody id="borrowSelectedTable">
+                <tr><td colspan="4" style="text-align:center;">No books selected.</td></tr>
               </tbody>
             </table>
           </section>
 
           <section class="ops-note">
             <strong>Business Note:</strong>
-            <p>When clicking "Create Receipt", the system will automatically update the stock quantity and change the book status to "Borrowed".</p>
+            <p>When clicking "Create Receipt", the system will update available stock in the database.</p>
           </section>
         </div>
 
         <aside class="loan-receipt">
           <div class="loan-receipt-head"><div><h2>Loan Receipt</h2><p>Fill in info to complete borrowing process.</p></div><span>New</span></div>
-          <label>Loan ID<input value="TECFL012"></label>
-          <p class="loan-valid">Valid card - Reader: Nguyen Thanh Ngan | NTN080124</p>
-          <div class="loan-date-grid"><label>Borrowed Date<input value="04/05/2026"></label><label>Due Date<input value="04/19/2026"></label></div>
+          <label>Loan ID<input id="borrowReceiptId" value="Generated after save" readonly></label>
+          <p class="loan-valid" id="borrowReceiptReader">Select a valid reader card.</p>
+          <div class="loan-date-grid">
+            <label>Borrowed Date<input id="borrowDate" type="date"></label>
+            <label>Due Date<input id="borrowDueDate" type="date"></label>
+          </div>
           <h3>Item Details</h3>
-          <div class="loan-item"><strong>TEC001<br>Python Programming</strong><span>Due<br>04/19/2026</span></div>
-          <div class="loan-item"><strong>FL002<br>Business Chinese</strong><span>Due<br>04/19/2026</span></div>
-          <div class="loan-summary"><p>Total books: <b>2</b></p><p>Default loan period: <b>14 days</b></p><p>Status: <span class="ops-pill gray">Pending</span></p></div>
-          <button class="loan-create">Create Receipt</button>
+          <div id="borrowReceiptItems">
+            <div class="loan-item"><strong>No books selected</strong><span>Due<br>-</span></div>
+          </div>
+          <div class="loan-summary"><p>Total books: <b id="borrowReceiptTotal">0</b></p><p>Default loan period: <b>14 days</b></p><p>Status: <span class="ops-pill gray" id="borrowReceiptStatus">Pending</span></p></div>
+          <button class="loan-create" id="borrowCreateReceipt" type="button">Create Receipt</button>
         </aside>
       </section>
 
-      <div class="loan-success">✓ <span>Success!</span></div>
+      <div class="loan-success" id="borrowMessage">Success!</div>
     </main>
   </div>
   <script src="js/app.js"></script>

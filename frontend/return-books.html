@@ -32,44 +32,53 @@
       <section class="return-top">
         <section class="ops-card return-search-card">
           <h2>Type Card ID</h2>
-          <small>Search by card ID</small>
-          <div class="loan-search"><input placeholder="NTN080124"><button>⊙</button></div>
-          <div class="loan-reader">
-            <div><strong>Nguyen Thanh Ngan</strong><span class="ops-pill soft">Active</span></div>
-            <p>Card ID: NTN080124</p>
-            <p>Books currently borrowed: 2</p>
+          <small>Search by card ID or reader ID</small>
+          <div class="loan-search">
+            <input id="returnReaderInput" placeholder="NTN080124">
+            <button id="returnReaderSearch" type="button">Search</button>
+          </div>
+          <div class="loan-reader" id="returnReaderInfo">
+            <div><strong>No reader selected</strong><span class="ops-pill gray">Waiting</span></div>
+            <p>Card ID: -</p>
+            <p>Books currently borrowed: 0</p>
             <b>Overdue books: 0</b>
           </div>
         </section>
         <section class="ops-card return-search-card">
           <h2>Check Loan Receipt</h2>
           <small>Type receipt ID</small>
-          <input placeholder="TECFL012">
-          <div class="return-receipt-mini"><span>▣</span><div><strong>Python Programming</strong><p>Book ID: TEC001</p><p>Borrowed Date: 12/05/2026</p></div></div>
+          <div class="loan-search">
+            <input id="returnReceiptInput" placeholder="Borrow record ID">
+            <button id="returnReceiptSearch" type="button">Search</button>
+          </div>
+          <div class="return-receipt-mini" id="returnReceiptPreview">
+            <span>#</span><div><strong>No receipt selected</strong><p>Search a borrow record from database.</p></div>
+          </div>
         </section>
       </section>
 
       <section class="ops-card return-condition">
-        <div class="ops-card-title"><div><h2>Book Condition List</h2><p>Confirm condition and calculate fees for 3 books.</p></div><button class="ops-alert">Action Required: if applicable</button></div>
+        <div class="ops-card-title">
+          <div><h2>Book Condition List</h2><p id="returnConditionCount">Confirm condition and calculate fees.</p></div>
+          <button class="ops-alert" type="button">Action Required: if applicable</button>
+        </div>
         <table>
           <thead><tr><th>Book Info</th><th>Borrowed Date</th><th>Due Date</th><th>Status</th><th>Book Condition</th><th>Fine</th></tr></thead>
-          <tbody>
-            <tr><td><strong>Python Programming</strong><br>TECFL001</td><td>12/05/2026</td><td>26/05/2026</td><td><span class="ops-pill gray">On Time</span></td><td><select><option>Normal</option></select></td><td>0 VND</td></tr>
-            <tr><td><strong>Business Chinese</strong><br>TECFL012</td><td>01/06/2026</td><td>25/06/2026</td><td><span class="ops-pill red">Overdue</span></td><td><select><option>Normal</option></select></td><td><b class="ops-red">+60,000 VND</b></td></tr>
-            <tr><td><strong>Database Management System</strong><br>TECFL012</td><td>15/06/2026</td><td>19/06/2026</td><td><span class="ops-pill gray">On Time</span></td><td><select><option>Damaged</option></select></td><td>0 VND</td></tr>
+          <tbody id="returnRecordsTable">
+            <tr><td colspan="6" style="text-align:center;">Search a reader or receipt to load active borrow records.</td></tr>
           </tbody>
         </table>
       </section>
 
       <section class="return-bottom">
-        <div class="ops-note"><strong>Business Notes</strong><p>Overdue fine: Handled according to library regulations.</p><p>Damaged books: Handled according to library regulations.</p></div>
+        <div class="ops-note"><strong>Business Notes</strong><p>Overdue, damaged, and lost-book fines are calculated by the API when confirmed.</p></div>
         <aside class="return-fee">
           <h2>Fee Summary</h2>
-          <p>Overdue fee <b>60,000 VND</b></p>
-          <p>Damage fee <b>25,000 VND</b></p>
-          <h3>Total Fine <strong>85,000 VND</strong></h3>
-          <button>Confirm Return of 3 Books</button>
-          <small>Librarian clicks confirm after successfully collecting fines.</small>
+          <p>Estimated overdue fee <b id="returnOverdueFee">0 VND</b></p>
+          <p>Selected records <b id="returnSelectedTotal">0</b></p>
+          <h3>Total Fine <strong id="returnTotalFine">0 VND</strong></h3>
+          <button id="returnConfirmButton" type="button">Confirm Return</button>
+          <small id="returnMessage">Select records, then confirm after collecting fines.</small>
         </aside>
       </section>
     </main>

@@ -1,316 +1,64 @@
-const books = [
-  {
-    code: "LT1001",
-    title: "The Adventures of a Cricket",
-    publisher: "Kim Dong Publisher",
-    author: "To Hoai",
-    year: 2023,
-    genre: "Literature",
-    status: "Borrowed",
-    qty: 8,
-  },
-  {
-    code: "FL002",
-    title: "Business Chinese",
-    publisher: "Education Publisher",
-    author: "Yangchen",
-    year: 2019,
-    genre: "Foreign Language",
-    status: "Available",
-    qty: 40,
-  },
-  {
-    code: "EC009",
-    title: "Human Resource Management",
-    publisher: "Alpha Books",
-    author: "Mai Le Ha",
-    year: 2018,
-    genre: "Business",
-    status: "Available",
-    qty: 6,
-  },
-  {
-    code: "T0009",
-    title: "Python Programming",
-    publisher: "Science Publisher",
-    author: "Nguyen Van",
-    year: 2020,
-    genre: "Technology",
-    status: "Available",
-    qty: 10,
-  },
-  {
-    code: "TC009",
-    title: "Database Management System",
-    publisher: "Science Publisher",
-    author: "Vo Van Binh",
-    year: 2023,
-    genre: "Technology",
-    status: "Available",
-    qty: 18,
-  },
-];
+const APP_API_BASE = location.protocol === "file:" ? "http://127.0.0.1:8000" : "";
 
-const historyRows = [
-  [
-    "P-2026-001",
-    "C++ Programming for Beginners",
-    "01/02/2026",
-    "15/02/2026",
-    "15/02/2026",
-    "0 ₫",
-    "Returned",
-  ],
-  [
-    "BP-2026-018",
-    "Modern User Interface Design",
-    "01/03/2026",
-    "15/03/2026",
-    "Pending",
-    "0 ₫",
-    "Borrowing",
-  ],
-  [
-    "HC-2026-003",
-    "Data Structures and Algorithms",
-    "01/05/2026",
-    "15/05/2026",
-    "16/05/2026",
-    "40.000 ₫",
-    "Returned",
-  ],
-  [
-    "BP-2026-018",
-    "Basic Python Programming",
-    "10/05/2026",
-    "24/05/2026",
-    "Pending",
-    "5.000 ₫",
-    "Borrowing",
-  ],
-  [
-    "SA-2026-008",
-    "The Psychology of Money",
-    "05/06/2026",
-    "19/06/2026",
-    "20/06/2026",
-    "5.000 ₫",
-    "Returned",
-  ],
-];
+function authHeaders() {
+  const token =
+    localStorage.getItem("token") ||
+    localStorage.getItem("librarian_token") ||
+    localStorage.getItem("librarian_id");
 
-function setActiveNav() {
-  const path = location.pathname.split("/").pop();
-  document.querySelectorAll(".side-nav a").forEach((link) => {
-    const href = link.getAttribute("href");
-    if (href === path) link.classList.add("active");
-  });
+  return token
+    ? {
+        Authorization: `Bearer ${token}`,
+        "X-Librarian-Id": token,
+      }
+    : {};
+}
 
-  if (
-    path.includes("librarian") ||
-    path.includes("borrow") ||
-    path.includes("return")
-  ) {
-    const roleText = document.querySelector("#roleText");
-    const userRole = document.querySelector("#userRole");
-    const userName = document.querySelector("#userName");
-    if (roleText) roleText.textContent = "Librarian";
-    if (userRole) userRole.textContent = "Librarian";
-    if (userName) userName.textContent = "Tran Anh Thu";
+function apiJsonHeaders() {
+  return {
+    "Content-Type": "application/json",
+    ...authHeaders(),
+  };
+}
+
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString("en-US");
+}
+
+function formatCurrency(value) {
+  return `${Number(value || 0).toLocaleString("vi-VN")} VND`;
+}
+
+function formatDate(value) {
+  if (!value) return "-";
+  const date = new Date(`${value}T00:00:00`);
+  return Number.isNaN(date.getTime())
+    ? value
+    : date.toLocaleDateString("en-US", {
+        month: "2-digit",
+        day: "2-digit",
+        year: "numeric",
+      });
+}
+
+function toISODate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+async function fetchJson(url, options = {}) {
+  const response = await fetch(`${APP_API_BASE}${url}`, options);
+  if (!response.ok) {
+    const detail = await response.text();
+    throw new Error(detail || `Request failed with status ${response.status}`);
   }
+  return response.json();
 }
-
-function renderReaderBooks(list = books) {
-  const tbody = document.querySelector("#booksTable");
-  const count = document.querySelector("#resultCount");
-  if (!tbody) return;
-
-  tbody.innerHTML = list
-    .map(
-      (book) => `
-    <tr>
-      <td>${book.code}</td>
-      <td>${book.title}</td>
-      <td>${book.publisher}</td>
-      <td>${book.author}</td>
-      <td>${book.year}</td>
-      <td>${book.genre}</td>
-      <td><span class="status ${book.status === "Available" ? "available" : "borrowed"}">${book.status}</span></td>
-      <td>›</td>
-    </tr>
-  `,
-    )
-    .join("");
-
-  if (count) count.textContent = `${list.length} books`;
-}
-
-function setupBookSearch() {
-  const input = document.querySelector("#bookSearchInput");
-  const genre = document.querySelector("#genreFilter");
-  const status = document.querySelector("#categoryFilter");
-  if (!input) return;
-
-  function filterBooks() {
-    const keyword = input.value.toLowerCase();
-    const genreValue = genre.value;
-    const statusValue = status.value;
-
-    const filtered = books.filter((book) => {
-      const matchKeyword =
-        book.title.toLowerCase().includes(keyword) ||
-        book.author.toLowerCase().includes(keyword);
-      const matchGenre = !genreValue || book.genre === genreValue;
-      const matchStatus = !statusValue || book.status === statusValue;
-      return matchKeyword && matchGenre && matchStatus;
-    });
-
-    renderReaderBooks(filtered);
-  }
-
-  input.addEventListener("input", filterBooks);
-  genre.addEventListener("change", filterBooks);
-  status.addEventListener("change", filterBooks);
-  renderReaderBooks();
-}
-
-function renderHistory(list = historyRows) {
-  const tbody = document.querySelector("#historyTable");
-  if (!tbody) return;
-
-  tbody.innerHTML = list
-    .map(
-      (row) => `
-    <tr>
-      ${row
-        .slice(0, 6)
-        .map((cell) => `<td>${cell}</td>`)
-        .join("")}
-      <td><span class="status ${row[6] === "Returned" ? "available" : "borrowed"}">${row[6]}</span></td>
-    </tr>
-  `,
-    )
-    .join("");
-}
-
-function setupHistorySearch() {
-  const input = document.querySelector("#historySearch");
-  if (!input) return;
-
-  input.addEventListener("input", () => {
-    const keyword = input.value.toLowerCase();
-    const filtered = historyRows.filter((row) =>
-      row.join(" ").toLowerCase().includes(keyword),
-    );
-    renderHistory(filtered);
-  });
-
-  renderHistory();
-}
-
-function renderManageBooks(list = window.__loadedBooks || books) {
-  const tbody = document.querySelector("#manageBooksTable");
-  if (!tbody) return;
-
-  if (!Array.isArray(list) || list.length === 0) {
-    tbody.innerHTML =
-      '<tr><td colspan="9" style="text-align:center;">No books found.</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = list
-    .map((book) => {
-      const quantity = Number(book.available_quantity ?? book.quantity ?? 0);
-      const isAvailable = quantity > 0;
-      const statusText = isAvailable ? "Available" : "In Stock";
-      const badgeClass = isAvailable ? "green" : "red";
-
-      return `
-      <tr>
-        <td>${book.id || "-"}</td>
-        <td>${book.title || "-"}</td>
-        <td>${book.author || "-"}</td>
-        <td>${book.publisher || "-"}</td>
-        <td>${book.publish_year || "-"}</td>
-        <td><span class="ops-tag">${book.category || "-"}</span></td>
-        <td>${quantity}</td>
-        <td><span class="ops-pill ${badgeClass}">${statusText}</span></td>
-        <td>
-          <button class="ops-icon" type="button" data-edit-book>Edit</button>
-          <button class="ops-icon" type="button">Delete</button>
-        </td>
-      </tr>
-    `;
-    })
-    .join("");
-}
-
-function setupBookModal() {
-  const modal = document.querySelector("#bookModal");
-  const openBtn = document.querySelector("#openAddBook");
-  const closeBtn = document.querySelector("#closeModal");
-  const form = document.querySelector("#addBookForm");
-  if (!modal || !openBtn) return;
-
-  openBtn.addEventListener("click", () => modal.classList.add("show"));
-  closeBtn.addEventListener("click", () => modal.classList.remove("show"));
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-
-    books.push({
-      code: newBookCode.value || "NEW001",
-      title: newBookTitle.value || "New Book",
-      publisher: "Science Publisher",
-      author: newBookAuthor.value || "Unknown",
-      year: new Date().getFullYear(),
-      genre: newBookGenre.value,
-      status: "Available",
-      qty: Number(newBookQuantity.value || 1),
-    });
-
-    renderManageBooks();
-    modal.classList.remove("show");
-    form.reset();
-  });
-
-  renderManageBooks();
-}
-
-function setupApprovalButtons() {
-  const approve = document.querySelector("#approveBtn");
-  const reject = document.querySelector("#rejectBtn");
-  const msg = document.querySelector("#verifyMessage");
-  if (!approve) return;
-
-  approve.addEventListener("click", () => {
-    msg.textContent = "Status Approved: The library card has been issued.";
-  });
-
-  reject.addEventListener("click", () => {
-    const reason = prompt("Enter rejection reason:");
-    msg.textContent = reason
-      ? `Status Rejected: ${reason}`
-      : "Request rejected.";
-  });
-}
-
-setActiveNav();
-setupBookSearch();
-setupHistorySearch();
-setupBookModal();
-setupApprovalButtons();
 
 function setupOperationsScreens() {
   const bookView = document.querySelector("#bookCatalogView");
   const categoryView = document.querySelector("#categoryView");
   const showCategory = document.querySelector("#showCategoryView");
   const showBooks = document.querySelector("#showBookView");
-  const editor = document.querySelector("#bookEditor");
-  const toast = document.querySelector("#bookToast");
-  const openEditor = document.querySelector("#openBookEditor");
-  const closeEditor = document.querySelector("#closeBookEditor");
-  const cancelEditor = document.querySelector("#cancelBookEditor");
 
   showCategory?.addEventListener("click", () => {
     bookView?.classList.add("hidden");
@@ -321,80 +69,468 @@ function setupOperationsScreens() {
     categoryView?.classList.add("hidden");
     bookView?.classList.remove("hidden");
   });
+}
 
-  function openBookEditor() {
-    editor?.classList.remove("hidden");
-    toast?.classList.remove("hidden");
-    window.setTimeout(() => toast?.classList.add("hidden"), 2200);
+function setupBorrowBooksPage() {
+  const readerInput = document.querySelector("#borrowReaderInput");
+  const readerButton = document.querySelector("#borrowReaderSearch");
+  const readerInfo = document.querySelector("#borrowReaderInfo");
+  const bookInput = document.querySelector("#borrowBookInput");
+  const bookButton = document.querySelector("#borrowBookSearch");
+  const bookResults = document.querySelector("#borrowBookResults");
+  const selectedTable = document.querySelector("#borrowSelectedTable");
+  const selectedCount = document.querySelector("#borrowSelectedCount");
+  const clearAllButton = document.querySelector("#borrowClearAll");
+  const borrowDateInput = document.querySelector("#borrowDate");
+  const dueDateInput = document.querySelector("#borrowDueDate");
+  const receiptReader = document.querySelector("#borrowReceiptReader");
+  const receiptItems = document.querySelector("#borrowReceiptItems");
+  const receiptTotal = document.querySelector("#borrowReceiptTotal");
+  const receiptStatus = document.querySelector("#borrowReceiptStatus");
+  const receiptId = document.querySelector("#borrowReceiptId");
+  const createButton = document.querySelector("#borrowCreateReceipt");
+  const message = document.querySelector("#borrowMessage");
+
+  if (!readerInput || !bookInput || !selectedTable) return;
+
+  const today = new Date();
+  const dueDate = new Date(today);
+  dueDate.setDate(today.getDate() + 14);
+  borrowDateInput.value = toISODate(today);
+  dueDateInput.value = toISODate(dueDate);
+  message?.classList.add("hidden");
+
+  let selectedReader = null;
+  let selectedBooks = [];
+
+  function showBorrowMessage(text, isError = false) {
+    if (!message) return;
+    message.textContent = text;
+    message.style.background = isError ? "#ffe1e1" : "#bdf0dd";
+    message.style.color = isError ? "#a12828" : "#2f724f";
+    message.classList.remove("hidden");
   }
 
-  function closeBookEditor() {
-    editor?.classList.add("hidden");
+  function renderReader(reader, summary = {}) {
+    if (!readerInfo) return;
+    const active = String(reader.card_status || reader.status) === "ACTIVE";
+    readerInfo.innerHTML = `
+      <div><strong>${reader.full_name || "-"}</strong><span class="ops-pill ${active ? "soft" : "red"}">${reader.card_status || reader.status || "-"}</span></div>
+      <p>Card ID: ${reader.card_code || reader.id || "-"}</p>
+      <p>Books currently borrowed: ${summary.currently_borrowed || 0}</p>
+      <b>Overdue books: ${summary.overdue_books || 0}</b>
+    `;
+    receiptReader.textContent = `Valid card - Reader: ${reader.full_name || "-"} | ${reader.card_code || reader.id}`;
   }
 
-  openEditor?.addEventListener("click", openBookEditor);
-  document.querySelectorAll("[data-edit-book]").forEach((button) => {
-    button.addEventListener("click", openBookEditor);
-  });
-  closeEditor?.addEventListener("click", closeBookEditor);
-  cancelEditor?.addEventListener("click", closeBookEditor);
-}
+  function renderSelectedBooks() {
+    selectedCount.textContent = `${selectedBooks.length} books selected`;
+    receiptTotal.textContent = selectedBooks.length;
 
-setupOperationsScreens();
-
-function formatNumber(value) {
-  return Number(value || 0).toLocaleString("en-US");
-}
-
-function formatCurrency(value) {
-  return `${formatNumber(value)} VND`;
-}
-
-async function loadDatabaseStatistics() {
-  const statNodes = document.querySelectorAll("[data-stat]");
-  if (!statNodes.length) return;
-
-  try {
-    const response = await fetch("/reports/summary");
-    if (!response.ok) return;
-
-    const stats = await response.json();
-
-    statNodes.forEach((node) => {
-      const key = node.dataset.stat;
-      const value = stats[key] ?? 0;
-      node.textContent =
-        node.dataset.format === "currency"
-          ? formatCurrency(value)
-          : formatNumber(value);
-    });
-
-    const borrowedNote = document.querySelector(
-      '[data-stat-note="currently_borrowed"]',
-    );
-    if (borrowedNote) {
-      const totalStock = Number(stats.total_stock || 0);
-      const borrowed = Number(stats.currently_borrowed || 0);
-      const percent = totalStock
-        ? ((borrowed / totalStock) * 100).toFixed(1)
-        : "0.0";
-      borrowedNote.textContent = `${percent}% of total stock`;
+    if (!selectedBooks.length) {
+      selectedTable.innerHTML = '<tr><td colspan="4" style="text-align:center;">No books selected.</td></tr>';
+      receiptItems.innerHTML = '<div class="loan-item"><strong>No books selected</strong><span>Due<br>-</span></div>';
+      return;
     }
 
-    const returnsNote = document.querySelector(
-      '[data-stat-note="total_returns"]',
-    );
+    selectedTable.innerHTML = selectedBooks
+      .map(
+        (book) => `
+          <tr>
+            <td>${book.id}</td>
+            <td>${book.title}</td>
+            <td>${book.author}</td>
+            <td><button class="ops-icon danger" type="button" data-remove-book="${book.id}">Remove</button></td>
+          </tr>
+        `,
+      )
+      .join("");
+
+    receiptItems.innerHTML = selectedBooks
+      .map(
+        (book) => `
+          <div class="loan-item"><strong>${book.id}<br>${book.title}</strong><span>Due<br>${formatDate(dueDateInput.value)}</span></div>
+        `,
+      )
+      .join("");
+  }
+
+  async function loadReader() {
+    const readerId = readerInput.value.trim();
+    if (!readerId) return;
+
+    try {
+      const reader = await fetchJson(`/readers/${encodeURIComponent(readerId)}`, {
+        headers: authHeaders(),
+      });
+      const summary = await fetchJson(
+        `/borrow-records/summary?reader_id=${encodeURIComponent(reader.id)}`,
+      );
+      selectedReader = reader;
+      renderReader(reader, summary);
+    } catch (error) {
+      selectedReader = null;
+      showBorrowMessage("Cannot load reader. Check librarian login/token and card ID.", true);
+    }
+  }
+
+  async function searchBooks() {
+    const keyword = bookInput.value.trim();
+    try {
+      const books = await fetchJson(`/books/search/?keyword=${encodeURIComponent(keyword)}`);
+      const availableBooks = books.filter((book) => Number(book.available_quantity || 0) > 0);
+
+      if (!availableBooks.length) {
+        bookResults.innerHTML = '<div class="loan-mini-book"><div><strong>No available books found</strong><p>Try another keyword.</p><span class="ops-pill red">Unavailable</span></div><button type="button" disabled>+</button></div>';
+        return;
+      }
+
+      bookResults.innerHTML = availableBooks
+        .slice(0, 8)
+        .map(
+          (book) => `
+            <div class="loan-mini-book">
+              <div><strong>${book.title}</strong><p>Author: ${book.author} | ID: ${book.id}</p><span class="ops-pill soft">In Stock: ${book.available_quantity}</span></div>
+              <button type="button" data-add-book="${book.id}">+</button>
+            </div>
+          `,
+        )
+        .join("");
+
+      bookResults.querySelectorAll("[data-add-book]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const book = availableBooks.find((item) => item.id === button.dataset.addBook);
+          if (book && !selectedBooks.some((item) => item.id === book.id)) {
+            selectedBooks.push(book);
+            renderSelectedBooks();
+          }
+        });
+      });
+    } catch (error) {
+      showBorrowMessage("Cannot search books from database.", true);
+    }
+  }
+
+  async function createBorrowRecords() {
+    if (!selectedReader) {
+      showBorrowMessage("Please verify a reader before creating receipt.", true);
+      return;
+    }
+    if (!selectedBooks.length) {
+      showBorrowMessage("Please add at least one book.", true);
+      return;
+    }
+
+    try {
+      const created = [];
+      for (const book of selectedBooks) {
+        const result = await fetchJson("/borrow-records/", {
+          method: "POST",
+          headers: apiJsonHeaders(),
+          body: JSON.stringify({
+            reader_id: selectedReader.card_code || selectedReader.id,
+            book_id: book.id,
+            borrow_date: borrowDateInput.value,
+            due_date: dueDateInput.value,
+          }),
+        });
+        created.push(result.record?.id || result.record?.book_id || book.id);
+      }
+
+      receiptId.value = created.join(", ");
+      receiptStatus.textContent = "Saved";
+      receiptStatus.className = "ops-pill soft";
+      selectedBooks = [];
+      renderSelectedBooks();
+      showBorrowMessage("Success! Borrow records were saved to database.");
+    } catch (error) {
+      showBorrowMessage("Cannot create borrow receipt. Check librarian login/token.", true);
+    }
+  }
+
+  readerButton?.addEventListener("click", loadReader);
+  readerInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") loadReader();
+  });
+  bookButton?.addEventListener("click", searchBooks);
+  bookInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") searchBooks();
+  });
+  selectedTable.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-remove-book]");
+    if (!button) return;
+    selectedBooks = selectedBooks.filter((book) => book.id !== button.dataset.removeBook);
+    renderSelectedBooks();
+  });
+  clearAllButton?.addEventListener("click", () => {
+    selectedBooks = [];
+    renderSelectedBooks();
+  });
+  dueDateInput.addEventListener("change", renderSelectedBooks);
+  createButton?.addEventListener("click", createBorrowRecords);
+}
+
+function setupReturnBooksPage() {
+  const readerInput = document.querySelector("#returnReaderInput");
+  const readerButton = document.querySelector("#returnReaderSearch");
+  const readerInfo = document.querySelector("#returnReaderInfo");
+  const receiptInput = document.querySelector("#returnReceiptInput");
+  const receiptButton = document.querySelector("#returnReceiptSearch");
+  const receiptPreview = document.querySelector("#returnReceiptPreview");
+  const table = document.querySelector("#returnRecordsTable");
+  const count = document.querySelector("#returnConditionCount");
+  const overdueFee = document.querySelector("#returnOverdueFee");
+  const selectedTotal = document.querySelector("#returnSelectedTotal");
+  const totalFine = document.querySelector("#returnTotalFine");
+  const confirmButton = document.querySelector("#returnConfirmButton");
+  const message = document.querySelector("#returnMessage");
+
+  if (!readerInput || !table) return;
+
+  let records = [];
+
+  function estimateRecordFine(record) {
+    const condition = document.querySelector(`[data-condition-for="${record.id}"]`)?.value || "NORMAL";
+    const overdue = Number(record.fine_amount || 0);
+    if (condition === "DAMAGED") return overdue + Number(record.book_price || 0) * 0.5;
+    if (condition === "LOST") return overdue + Number(record.book_price || 0) * 2;
+    return overdue;
+  }
+
+  function renderReader(reader, summary = {}) {
+    const active = String(reader.card_status || reader.status) === "ACTIVE";
+    readerInfo.innerHTML = `
+      <div><strong>${reader.full_name || "-"}</strong><span class="ops-pill ${active ? "soft" : "red"}">${reader.card_status || reader.status || "-"}</span></div>
+      <p>Card ID: ${reader.card_code || reader.id || "-"}</p>
+      <p>Books currently borrowed: ${summary.currently_borrowed || 0}</p>
+      <b>Overdue books: ${summary.overdue_books || 0}</b>
+    `;
+  }
+
+  function updateReturnSummary() {
+    const selected = records.filter((record) => {
+      const checkbox = document.querySelector(`[data-return-record="${record.id}"]`);
+      return checkbox?.checked;
+    });
+    const overdue = selected.reduce((sum, record) => sum + Number(record.fine_amount || 0), 0);
+    const total = selected.reduce((sum, record) => sum + estimateRecordFine(record), 0);
+
+    overdueFee.textContent = formatCurrency(overdue);
+    selectedTotal.textContent = selected.length;
+    totalFine.textContent = formatCurrency(total);
+  }
+
+  function renderRecords(list) {
+    records = list.filter((record) => record.status === "BORROWED" || record.status === "OVERDUE");
+    count.textContent = `Confirm condition and calculate fees for ${records.length} books.`;
+
+    if (!records.length) {
+      table.innerHTML = '<tr><td colspan="6" style="text-align:center;">No active borrow records found.</td></tr>';
+      updateReturnSummary();
+      return;
+    }
+
+    table.innerHTML = records
+      .map((record) => {
+        const statusClass = record.status === "OVERDUE" || Number(record.fine_amount || 0) > 0 ? "red" : "gray";
+        const statusText = statusClass === "red" ? "Overdue" : "On Time";
+        return `
+          <tr>
+            <td><label><input type="checkbox" data-return-record="${record.id}" checked> <strong>${record.book_title || record.book_id}</strong></label><br>${record.book_id}<br><small>${record.id}</small></td>
+            <td>${formatDate(record.borrow_date)}</td>
+            <td>${formatDate(record.due_date)}</td>
+            <td><span class="ops-pill ${statusClass}">${statusText}</span></td>
+            <td>
+              <select data-condition-for="${record.id}">
+                <option value="NORMAL">Normal</option>
+                <option value="DAMAGED">Damaged</option>
+                <option value="LOST">Lost</option>
+              </select>
+            </td>
+            <td>${formatCurrency(record.fine_amount)}</td>
+          </tr>
+        `;
+      })
+      .join("");
+
+    table.querySelectorAll("input, select").forEach((node) => {
+      node.addEventListener("change", updateReturnSummary);
+    });
+    updateReturnSummary();
+  }
+
+  async function loadReaderReturns() {
+    const readerId = readerInput.value.trim();
+    if (!readerId) return;
+
+    try {
+      const reader = await fetchJson(`/readers/${encodeURIComponent(readerId)}`, {
+        headers: authHeaders(),
+      });
+      const summary = await fetchJson(
+        `/borrow-records/summary?reader_id=${encodeURIComponent(reader.id)}`,
+      );
+      renderReader(reader, summary);
+
+      const activeRecords = await fetchJson(
+        `/borrow-records/active?reader_id=${encodeURIComponent(reader.card_code || reader.id)}`,
+        { headers: authHeaders() },
+      );
+      renderRecords(activeRecords);
+    } catch (error) {
+      message.textContent = "Cannot load reader return records. Check librarian login/token and card ID.";
+    }
+  }
+
+  async function loadReceipt() {
+    const recordId = receiptInput.value.trim();
+    if (!recordId) return;
+
+    try {
+      const record = await fetchJson(`/borrow-records/${encodeURIComponent(recordId)}`);
+      receiptPreview.innerHTML = `<span>#</span><div><strong>${record.book_title || record.book_id}</strong><p>Book ID: ${record.book_id}</p><p>Borrowed Date: ${formatDate(record.borrow_date)}</p></div>`;
+      renderRecords([record]);
+    } catch (error) {
+      message.textContent = "Cannot find that borrow record.";
+    }
+  }
+
+  async function confirmReturns() {
+    const selected = records.filter((record) => {
+      const checkbox = document.querySelector(`[data-return-record="${record.id}"]`);
+      return checkbox?.checked;
+    });
+
+    if (!selected.length) {
+      message.textContent = "Please select at least one borrow record.";
+      return;
+    }
+
+    try {
+      for (const record of selected) {
+        const condition = document.querySelector(`[data-condition-for="${record.id}"]`)?.value || "NORMAL";
+        await fetchJson(`/borrow-records/${encodeURIComponent(record.id)}/return`, {
+          method: "PATCH",
+          headers: apiJsonHeaders(),
+          body: JSON.stringify({
+            borrow_record_id: record.id,
+            book_condition: condition,
+            is_damaged: condition === "DAMAGED",
+            is_lost: condition === "LOST",
+            return_date: toISODate(new Date()),
+          }),
+        });
+      }
+
+      message.textContent = "Return processed successfully and database was updated.";
+      renderRecords(records.filter((record) => !selected.some((item) => item.id === record.id)));
+    } catch (error) {
+      message.textContent = "Cannot confirm return. Check librarian login/token.";
+    }
+  }
+
+  readerButton?.addEventListener("click", loadReaderReturns);
+  readerInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") loadReaderReturns();
+  });
+  receiptButton?.addEventListener("click", loadReceipt);
+  receiptInput?.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") loadReceipt();
+  });
+  confirmButton?.addEventListener("click", confirmReturns);
+}
+
+function setupReportsPage() {
+  const statNodes = document.querySelectorAll("[data-stat]");
+  const startInput = document.querySelector("#reportStartDate");
+  const endInput = document.querySelector("#reportEndDate");
+  const filterButton = document.querySelector("#filterReports");
+  const refreshButton = document.querySelector("#refreshReports");
+  const detailButton = document.querySelector("#viewReportDetails");
+  const detailsCard = document.querySelector("#reportDetailsCard");
+  const detailsTable = document.querySelector("#reportDetailsTable");
+  const detailsSummary = document.querySelector("#reportDetailsSummary");
+
+  if (!statNodes.length) return;
+
+  let currentStats = {};
+
+  function renderDetails(stats) {
+    const rows = [
+      ["Total Books", stats.total_books],
+      ["Borrowed Books", stats.borrowed_books],
+      ["Total Borrows", stats.total_borrows],
+      ["Total Returns", stats.total_returns],
+      ["Overdue Returns", stats.overdue_returns],
+      ["Total Fine Amount", formatCurrency(stats.total_fine_amount)],
+      ["Total Cards Issued", stats.total_cards_issued],
+      ["Active Readers", stats.active_readers],
+      ["Most Borrowed Book", stats.most_borrowed_book ? `${stats.most_borrowed_book.title} (${stats.most_borrowed_book.times})` : "-"],
+      ["Most Active Reader", stats.most_active_reader ? `${stats.most_active_reader.full_name} (${stats.most_active_reader.times})` : "-"],
+    ];
+
+    detailsTable.innerHTML = rows
+      .map(([label, value]) => `<tr><td>${label}</td><td>${value ?? 0}</td></tr>`)
+      .join("");
+    detailsSummary.textContent = "Loaded from /reports/summary";
+  }
+
+  function renderStats(stats) {
+    currentStats = stats;
+    statNodes.forEach((node) => {
+      const value = stats[node.dataset.stat] ?? 0;
+      node.textContent =
+        node.dataset.format === "currency" ? formatCurrency(value) : formatNumber(value);
+    });
+
+    const borrowedNote = document.querySelector('[data-stat-note="borrowed_books"]');
+    if (borrowedNote) {
+      const total = Number(stats.total_books || 0);
+      const borrowed = Number(stats.borrowed_books || 0);
+      const percent = total ? ((borrowed / total) * 100).toFixed(1) : "0.0";
+      borrowedNote.textContent = `${percent}% of total titles`;
+    }
+
+    const returnsNote = document.querySelector('[data-stat-note="total_returns"]');
     if (returnsNote) {
       const totalBorrows = Number(stats.total_borrows || 0);
       const totalReturns = Number(stats.total_returns || 0);
-      const percent = totalBorrows
-        ? ((totalReturns / totalBorrows) * 100).toFixed(1)
-        : "0.0";
+      const percent = totalBorrows ? ((totalReturns / totalBorrows) * 100).toFixed(1) : "0.0";
       returnsNote.textContent = `${percent}% completion rate`;
     }
-  } catch (error) {
-    console.warn("Could not load database statistics", error);
+
+    if (!detailsCard.classList.contains("hidden")) renderDetails(stats);
   }
+
+  async function loadDatabaseStatistics() {
+    const params = new URLSearchParams();
+    if (startInput?.value) params.set("start_date", startInput.value);
+    if (endInput?.value) params.set("end_date", endInput.value);
+    const query = params.toString() ? `?${params.toString()}` : "";
+
+    try {
+      const stats = await fetchJson(`/reports/summary${query}`, {
+        headers: authHeaders(),
+      });
+      renderStats(stats);
+    } catch (error) {
+      detailsCard?.classList.remove("hidden");
+      detailsTable.innerHTML =
+        '<tr><td colspan="2" style="text-align:center;">Cannot load report data. Check librarian login/token.</td></tr>';
+    }
+  }
+
+  filterButton?.addEventListener("click", loadDatabaseStatistics);
+  refreshButton?.addEventListener("click", loadDatabaseStatistics);
+  detailButton?.addEventListener("click", () => {
+    detailsCard?.classList.toggle("hidden");
+    if (!detailsCard.classList.contains("hidden")) renderDetails(currentStats);
+  });
+
+  loadDatabaseStatistics();
 }
 
-loadDatabaseStatistics();
+setupOperationsScreens();
+setupBorrowBooksPage();
+setupReturnBooksPage();
+setupReportsPage();

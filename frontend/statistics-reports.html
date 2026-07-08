@@ -30,26 +30,40 @@
           <h1>Statistics & Reports</h1>
           <p>Real-time analysis and reporting of library activities</p>
         </div>
-        <button class="ops-primary" type="button">Export Report</button>
+        <button class="ops-primary" type="button" id="refreshReports">Refresh Report</button>
       </header>
 
       <section class="reports-filter">
-        <label>From Date<input type="text" value="05-05-2026"></label>
-        <label>To Date<input type="text" value="06-06-2026"></label>
-        <label>Report Type<select><option></option><option>Monthly</option></select></label>
-        <button type="button">Filter</button>
-        <button type="button">View Details</button>
+        <label>From Date<input id="reportStartDate" type="date"></label>
+        <label>To Date<input id="reportEndDate" type="date"></label>
+        <label>Report Type<select id="reportType"><option value="">Summary</option><option>Monthly</option></select></label>
+        <button type="button" id="filterReports">Filter</button>
+        <button type="button" id="viewReportDetails">View Details</button>
       </section>
 
       <section class="report-kpis">
-        <article class="blue"><span>Total Titles</span><strong data-stat="total_titles">0</strong><small data-stat-note="total_titles">From database</small></article>
-        <article class="green"><span>Currently Borrowed</span><strong data-stat="currently_borrowed">0</strong><small data-stat-note="currently_borrowed">From stock quantity</small></article>
+        <article class="blue"><span>Total Titles</span><strong data-stat="total_books">0</strong><small data-stat-note="total_books">From database</small></article>
+        <article class="green"><span>Currently Borrowed</span><strong data-stat="borrowed_books">0</strong><small data-stat-note="borrowed_books">From borrow records</small></article>
         <article class="gray"><span>Total Borrows</span><strong data-stat="total_borrows">0</strong><small data-stat-note="total_borrows">Borrow records</small></article>
         <article class="cream"><span>Total Returns</span><strong data-stat="total_returns">0</strong><small data-stat-note="total_returns">Returned records</small></article>
         <article class="red"><span>Overdue Returns</span><strong data-stat="overdue_returns">0</strong><small data-stat-note="overdue_returns">Returned after due date</small></article>
         <article class="yellow"><span>Total Fines</span><strong data-stat="total_fine_amount" data-format="currency">0 VND</strong><small data-stat-note="total_fine_amount">Calculated from overdue days</small></article>
         <article class="blue"><span>Total Cards Issued</span><strong data-stat="total_cards_issued">0</strong><small data-stat-note="total_cards_issued">Approved registrations</small></article>
         <article class="green"><span>Active Readers</span><strong data-stat="active_readers">0</strong><small data-stat-note="active_readers">Reader status active</small></article>
+      </section>
+
+      <section class="ops-card ops-table-card hidden" id="reportDetailsCard">
+        <div class="ops-card-title">
+          <div><h2>Detailed Data</h2><p id="reportDetailsSummary">Database report summary</p></div>
+        </div>
+        <div class="ops-table-wrap">
+          <table>
+            <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+            <tbody id="reportDetailsTable">
+              <tr><td colspan="2" style="text-align:center;">Load report data to view details.</td></tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="reports-grid">
