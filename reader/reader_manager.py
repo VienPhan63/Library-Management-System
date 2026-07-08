@@ -1,3 +1,5 @@
+from csv import reader
+
 from repositories.reader_repository import ReaderRepository
 from models.reader import Reader, ReaderStatus
 
@@ -104,14 +106,35 @@ class ReaderManager:
         return reader
 
     def delete_reader(self, reader_id):
+    
         if not reader_id:
             raise ValueError("Reader ID is required")
 
         reader = self.repo.get_by_id(reader_id)
 
         if reader is None:
-            return False
+            raise ValueError("Reader not found")
 
         self.repo.delete(reader)
 
         return True
+
+    def login(self, email, password):
+        if not email or not email.strip():
+            raise ValueError("Email is required")
+
+        if not password or not password.strip():
+            raise ValueError("Password is required")
+
+        reader = self.repo.get_by_email(email)
+
+        if reader is None:
+            raise ValueError("Email does not exist")
+
+        if reader.password != password:
+            raise ValueError("Incorrect password")
+
+        if reader.status != ReaderStatus.ACTIVE:
+            raise ValueError("Reader account is not active")
+
+        return reader
