@@ -9,7 +9,9 @@ class BorrowRequest(BaseModel):
 
     reader_id: str
     book_id: str
-    librarian_id: str
+    librarian_id: str | None = None
+    borrow_date: date | None = None
+    due_date: date | None = None
 
 
 class ReturnRequest(BaseModel):
@@ -17,6 +19,8 @@ class ReturnRequest(BaseModel):
     borrow_record_id: str
     is_damaged: bool = False
     is_lost: bool = False
+    return_date: date | None = None
+    book_condition: str | None = None
 
 
 class BorrowRecordResponse(BaseModel):

@@ -19,3 +19,5 @@ fastapi
 uvicorn
 
 jinja2
+
+bcrypt

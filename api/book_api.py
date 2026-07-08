@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
+from api.librarian_auth import get_current_librarian
 from database.dependencies import get_db
 from models import Book, Librarian
 from models.book import BookStatus
@@ -27,7 +28,9 @@ def _get_librarian_id(db: Session, librarian_id: str | None) -> str:
         librarian = librarian_repo.create(
             Librarian(
                 full_name="Default Librarian",
-                phone_number="0000000000"
+                phone_number="0000000000",
+                email="default.librarian@library.local",
+                password="default-password",
             )
         )
         db.flush()
@@ -42,6 +45,7 @@ def get_books(db: Session = Depends(get_db)):
 
 
 @router.get("/search/", response_model=list[BookResponse])
+@router.get("/search", response_model=list[BookResponse])
 def search_books(
     keyword: str = Query(default=""),
     category: str | None = None,
@@ -80,6 +84,7 @@ def get_book(book_id: str, db: Session = Depends(get_db)):
 @router.post("/", response_model=BookResponse, status_code=201)
 def create_book(
     payload: BookCreate,
+    librarian: Librarian = Depends(get_current_librarian),
     db: Session = Depends(get_db)
 ):
     repo = BookRepository(db)
@@ -95,6 +100,8 @@ def create_book(
             detail="Available quantity cannot exceed quantity"
         )
 
+    status = BookStatus.AVAILABLE if available_quantity > 0 else BookStatus.UNAVAILABLE
+
     book = Book(
         title=payload.title,
         author=payload.author,
@@ -105,8 +112,8 @@ def create_book(
         quantity=payload.quantity,
         price=payload.price,
         available_quantity=available_quantity,
-        status=payload.status,
-        librarian_id=_get_librarian_id(db, payload.librarian_id),
+        status=status,
+        librarian_id=_get_librarian_id(db, payload.librarian_id or librarian.id),
     )
 
     repo.create(book)
@@ -120,6 +127,7 @@ def create_book(
 def update_book(
     book_id: str,
     payload: BookUpdate,
+    librarian: Librarian = Depends(get_current_librarian),
     db: Session = Depends(get_db)
 ):
     repo = BookRepository(db)
@@ -141,6 +149,8 @@ def update_book(
             detail="Available quantity cannot exceed quantity"
         )
 
+    book.status = BookStatus.AVAILABLE if book.available_quantity > 0 else BookStatus.UNAVAILABLE
+
     db.commit()
     db.refresh(book)
 
@@ -148,7 +158,11 @@ def update_book(
 
 
 @router.delete("/{book_id}")
-def delete_book(book_id: str, db: Session = Depends(get_db)):
+def delete_book(
+    book_id: str,
+    librarian: Librarian = Depends(get_current_librarian),
+    db: Session = Depends(get_db)
+):
     repo = BookRepository(db)
     book = repo.get_by_id(book_id)
 

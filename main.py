@@ -75,19 +75,31 @@
 #     return {"message": "Book not found"}
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 
 from api.registration_api import router as registration_router
+from api.auth_api import router as auth_router
 from api.book_api import router as book_router
 from api.report_api import router as report_router
 from api.librarian_api import router as librarian_router
 from api.borrowRecord_api import router as borrow_record_router
 from api.reader_api import router as reader_router
+from api.category_api import router as category_router
+from api.reader_management_api import router as reader_management_router
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Static files
 app.mount(
@@ -101,11 +113,14 @@ templates = Jinja2Templates(directory="frontend")
 
 # API
 app.include_router(registration_router)
+app.include_router(auth_router)
 app.include_router(book_router)
 app.include_router(report_router)
 app.include_router(librarian_router)
 app.include_router(borrow_record_router)
 app.include_router(reader_router)
+app.include_router(category_router)
+app.include_router(reader_management_router)
 
 
 

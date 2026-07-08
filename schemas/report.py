@@ -14,7 +14,7 @@ class ReportCreate(BaseModel):
 
     end_date: date
 
-    librarian_id: str
+    librarian_id: str | None = None
 
 
 class ReportResponse(BaseModel):
