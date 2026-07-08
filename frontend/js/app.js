@@ -1,18 +1,102 @@
-
 const books = [
-  { code: "LT1001", title: "The Adventures of a Cricket", publisher: "Kim Dong Publisher", author: "To Hoai", year: 2023, genre: "Literature", status: "Borrowed", qty: 8 },
-  { code: "FL002", title: "Business Chinese", publisher: "Education Publisher", author: "Yangchen", year: 2019, genre: "Foreign Language", status: "Available", qty: 40 },
-  { code: "EC009", title: "Human Resource Management", publisher: "Alpha Books", author: "Mai Le Ha", year: 2018, genre: "Business", status: "Available", qty: 6 },
-  { code: "T0009", title: "Python Programming", publisher: "Science Publisher", author: "Nguyen Van", year: 2020, genre: "Technology", status: "Available", qty: 10 },
-  { code: "TC009", title: "Database Management System", publisher: "Science Publisher", author: "Vo Van Binh", year: 2023, genre: "Technology", status: "Available", qty: 18 }
+  {
+    code: "LT1001",
+    title: "The Adventures of a Cricket",
+    publisher: "Kim Dong Publisher",
+    author: "To Hoai",
+    year: 2023,
+    genre: "Literature",
+    status: "Borrowed",
+    qty: 8,
+  },
+  {
+    code: "FL002",
+    title: "Business Chinese",
+    publisher: "Education Publisher",
+    author: "Yangchen",
+    year: 2019,
+    genre: "Foreign Language",
+    status: "Available",
+    qty: 40,
+  },
+  {
+    code: "EC009",
+    title: "Human Resource Management",
+    publisher: "Alpha Books",
+    author: "Mai Le Ha",
+    year: 2018,
+    genre: "Business",
+    status: "Available",
+    qty: 6,
+  },
+  {
+    code: "T0009",
+    title: "Python Programming",
+    publisher: "Science Publisher",
+    author: "Nguyen Van",
+    year: 2020,
+    genre: "Technology",
+    status: "Available",
+    qty: 10,
+  },
+  {
+    code: "TC009",
+    title: "Database Management System",
+    publisher: "Science Publisher",
+    author: "Vo Van Binh",
+    year: 2023,
+    genre: "Technology",
+    status: "Available",
+    qty: 18,
+  },
 ];
 
 const historyRows = [
-  ["P-2026-001", "C++ Programming for Beginners", "01/02/2026", "15/02/2026", "15/02/2026", "0 ₫", "Returned"],
-  ["BP-2026-018", "Modern User Interface Design", "01/03/2026", "15/03/2026", "Pending", "0 ₫", "Borrowing"],
-  ["HC-2026-003", "Data Structures and Algorithms", "01/05/2026", "15/05/2026", "16/05/2026", "40.000 ₫", "Returned"],
-  ["BP-2026-018", "Basic Python Programming", "10/05/2026", "24/05/2026", "Pending", "5.000 ₫", "Borrowing"],
-  ["SA-2026-008", "The Psychology of Money", "05/06/2026", "19/06/2026", "20/06/2026", "5.000 ₫", "Returned"]
+  [
+    "P-2026-001",
+    "C++ Programming for Beginners",
+    "01/02/2026",
+    "15/02/2026",
+    "15/02/2026",
+    "0 ₫",
+    "Returned",
+  ],
+  [
+    "BP-2026-018",
+    "Modern User Interface Design",
+    "01/03/2026",
+    "15/03/2026",
+    "Pending",
+    "0 ₫",
+    "Borrowing",
+  ],
+  [
+    "HC-2026-003",
+    "Data Structures and Algorithms",
+    "01/05/2026",
+    "15/05/2026",
+    "16/05/2026",
+    "40.000 ₫",
+    "Returned",
+  ],
+  [
+    "BP-2026-018",
+    "Basic Python Programming",
+    "10/05/2026",
+    "24/05/2026",
+    "Pending",
+    "5.000 ₫",
+    "Borrowing",
+  ],
+  [
+    "SA-2026-008",
+    "The Psychology of Money",
+    "05/06/2026",
+    "19/06/2026",
+    "20/06/2026",
+    "5.000 ₫",
+    "Returned",
+  ],
 ];
 
 function setActiveNav() {
@@ -22,7 +106,11 @@ function setActiveNav() {
     if (href === path) link.classList.add("active");
   });
 
-  if (path.includes("librarian") || path.includes("borrow") || path.includes("return")) {
+  if (
+    path.includes("librarian") ||
+    path.includes("borrow") ||
+    path.includes("return")
+  ) {
     const roleText = document.querySelector("#roleText");
     const userRole = document.querySelector("#userRole");
     const userName = document.querySelector("#userName");
@@ -37,7 +125,9 @@ function renderReaderBooks(list = books) {
   const count = document.querySelector("#resultCount");
   if (!tbody) return;
 
-  tbody.innerHTML = list.map(book => `
+  tbody.innerHTML = list
+    .map(
+      (book) => `
     <tr>
       <td>${book.code}</td>
       <td>${book.title}</td>
@@ -48,7 +138,9 @@ function renderReaderBooks(list = books) {
       <td><span class="status ${book.status === "Available" ? "available" : "borrowed"}">${book.status}</span></td>
       <td>›</td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 
   if (count) count.textContent = `${list.length} books`;
 }
@@ -64,7 +156,7 @@ function setupBookSearch() {
     const genreValue = genre.value;
     const statusValue = status.value;
 
-    const filtered = books.filter(book => {
+    const filtered = books.filter((book) => {
       const matchKeyword =
         book.title.toLowerCase().includes(keyword) ||
         book.author.toLowerCase().includes(keyword);
@@ -86,12 +178,19 @@ function renderHistory(list = historyRows) {
   const tbody = document.querySelector("#historyTable");
   if (!tbody) return;
 
-  tbody.innerHTML = list.map(row => `
+  tbody.innerHTML = list
+    .map(
+      (row) => `
     <tr>
-      ${row.slice(0,6).map(cell => `<td>${cell}</td>`).join("")}
+      ${row
+        .slice(0, 6)
+        .map((cell) => `<td>${cell}</td>`)
+        .join("")}
       <td><span class="status ${row[6] === "Returned" ? "available" : "borrowed"}">${row[6]}</span></td>
     </tr>
-  `).join("");
+  `,
+    )
+    .join("");
 }
 
 function setupHistorySearch() {
@@ -100,30 +199,50 @@ function setupHistorySearch() {
 
   input.addEventListener("input", () => {
     const keyword = input.value.toLowerCase();
-    const filtered = historyRows.filter(row => row.join(" ").toLowerCase().includes(keyword));
+    const filtered = historyRows.filter((row) =>
+      row.join(" ").toLowerCase().includes(keyword),
+    );
     renderHistory(filtered);
   });
 
   renderHistory();
 }
 
-function renderManageBooks() {
+function renderManageBooks(list = window.__loadedBooks || books) {
   const tbody = document.querySelector("#manageBooksTable");
   if (!tbody) return;
 
-  tbody.innerHTML = books.map(book => `
-    <tr>
-      <td>${book.code}</td>
-      <td>${book.title}</td>
-      <td>${book.author}</td>
-      <td>${book.publisher}</td>
-      <td>${book.year}</td>
-      <td>${book.genre}</td>
-      <td>${book.qty}</td>
-      <td><span class="status ${book.status === "Available" ? "available" : "rejected"}">${book.status}</span></td>
-      <td>✎ 🗑</td>
-    </tr>
-  `).join("");
+  if (!Array.isArray(list) || list.length === 0) {
+    tbody.innerHTML =
+      '<tr><td colspan="9" style="text-align:center;">No books found.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = list
+    .map((book) => {
+      const quantity = Number(book.available_quantity ?? book.quantity ?? 0);
+      const isAvailable = quantity > 0;
+      const statusText = isAvailable ? "Available" : "In Stock";
+      const badgeClass = isAvailable ? "green" : "red";
+
+      return `
+      <tr>
+        <td>${book.id || "-"}</td>
+        <td>${book.title || "-"}</td>
+        <td>${book.author || "-"}</td>
+        <td>${book.publisher || "-"}</td>
+        <td>${book.publish_year || "-"}</td>
+        <td><span class="ops-tag">${book.category || "-"}</span></td>
+        <td>${quantity}</td>
+        <td><span class="ops-pill ${badgeClass}">${statusText}</span></td>
+        <td>
+          <button class="ops-icon" type="button" data-edit-book>Edit</button>
+          <button class="ops-icon" type="button">Delete</button>
+        </td>
+      </tr>
+    `;
+    })
+    .join("");
 }
 
 function setupBookModal() {
@@ -147,7 +266,7 @@ function setupBookModal() {
       year: new Date().getFullYear(),
       genre: newBookGenre.value,
       status: "Available",
-      qty: Number(newBookQuantity.value || 1)
+      qty: Number(newBookQuantity.value || 1),
     });
 
     renderManageBooks();
@@ -170,7 +289,9 @@ function setupApprovalButtons() {
 
   reject.addEventListener("click", () => {
     const reason = prompt("Enter rejection reason:");
-    msg.textContent = reason ? `Status Rejected: ${reason}` : "Request rejected.";
+    msg.textContent = reason
+      ? `Status Rejected: ${reason}`
+      : "Request rejected.";
   });
 }
 
@@ -242,24 +363,33 @@ async function loadDatabaseStatistics() {
     statNodes.forEach((node) => {
       const key = node.dataset.stat;
       const value = stats[key] ?? 0;
-      node.textContent = node.dataset.format === "currency"
-        ? formatCurrency(value)
-        : formatNumber(value);
+      node.textContent =
+        node.dataset.format === "currency"
+          ? formatCurrency(value)
+          : formatNumber(value);
     });
 
-    const borrowedNote = document.querySelector('[data-stat-note="currently_borrowed"]');
+    const borrowedNote = document.querySelector(
+      '[data-stat-note="currently_borrowed"]',
+    );
     if (borrowedNote) {
       const totalStock = Number(stats.total_stock || 0);
       const borrowed = Number(stats.currently_borrowed || 0);
-      const percent = totalStock ? ((borrowed / totalStock) * 100).toFixed(1) : "0.0";
+      const percent = totalStock
+        ? ((borrowed / totalStock) * 100).toFixed(1)
+        : "0.0";
       borrowedNote.textContent = `${percent}% of total stock`;
     }
 
-    const returnsNote = document.querySelector('[data-stat-note="total_returns"]');
+    const returnsNote = document.querySelector(
+      '[data-stat-note="total_returns"]',
+    );
     if (returnsNote) {
       const totalBorrows = Number(stats.total_borrows || 0);
       const totalReturns = Number(stats.total_returns || 0);
-      const percent = totalBorrows ? ((totalReturns / totalBorrows) * 100).toFixed(1) : "0.0";
+      const percent = totalBorrows
+        ? ((totalReturns / totalBorrows) * 100).toFixed(1)
+        : "0.0";
       returnsNote.textContent = `${percent}% completion rate`;
     }
   } catch (error) {
