@@ -105,7 +105,7 @@ def create_book(
     book = Book(
         title=payload.title,
         author=payload.author,
-        publisher=payload.publisher,
+publisher=payload.publisher,
         publish_year=payload.publish_year,
         category=payload.category,
         description=payload.description,
@@ -173,29 +173,3 @@ def delete_book(
     db.commit()
 
     return {"message": "Book deleted successfully"}
-
-
-
-@router.get("/categories")
-def get_book_categories(
-    librarian: Librarian = Depends(get_current_librarian),
-):
-    return {
-        "categories": [
-            "Novel",
-            "Science",
-            "History",
-            "Technology"
-        ]
-    }
-
-
-@router.post("/categories")
-def create_book_category(
-    category: str,
-    librarian: Librarian = Depends(get_current_librarian),
-):
-    return {
-        "message": "Book category created successfully",
-        "category": category
-    }
