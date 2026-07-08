@@ -1,22 +1,25 @@
-from reader.reader_api import ReaderAPI
+from reader.reader_manager import ReaderManager
 
 
-class ReaderRequest:
+class ReaderAPI:
 
     def __init__(self, session):
-        self.api = ReaderAPI(session)
+        self.manager = ReaderManager(session)
 
     def get_reader(self, reader_id):
-        return self.api.get_reader(reader_id)
+        return self.manager.get_reader(reader_id)
 
     def get_all_readers(self):
-        return self.api.get_all_readers()
+        return self.manager.get_all_readers()
 
     def get_active_readers(self):
-        return self.api.get_active_readers()
+        return self.manager.get_active_readers()
+
+    def login(self, email, password):
+        return self.manager.login(email, password)
 
     def search_reader(self, keyword):
-        return self.api.search_reader(keyword)
+        return self.manager.search_reader(keyword)
 
     def create_reader(
         self,
@@ -28,7 +31,7 @@ class ReaderRequest:
         date_of_birth,
         librarian_id,
     ):
-        return self.api.create_reader(
+        return self.manager.create_reader(
             full_name,
             email,
             password,
@@ -45,7 +48,7 @@ class ReaderRequest:
         phone_number,
         gender,
     ):
-        return self.api.update_reader(
+        return self.manager.update_reader(
             reader_id,
             full_name,
             phone_number,
@@ -53,4 +56,4 @@ class ReaderRequest:
         )
 
     def delete_reader(self, reader_id):
-        return self.api.delete_reader(reader_id)
+        return self.manager.delete_reader(reader_id)
