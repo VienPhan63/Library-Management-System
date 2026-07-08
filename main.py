@@ -84,6 +84,7 @@ from api.book_api import router as book_router
 from api.report_api import router as report_router
 from api.librarian_api import router as librarian_router
 from api.borrowRecord_api import router as borrow_record_router
+from api.reader_api import router as reader_router
 
 
 app = FastAPI()
@@ -104,6 +105,7 @@ app.include_router(book_router)
 app.include_router(report_router)
 app.include_router(librarian_router)
 app.include_router(borrow_record_router)
+app.include_router(reader_router)
 
 
 

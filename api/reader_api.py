@@ -1,59 +1,43 @@
-from reader.reader_manager import ReaderManager
+from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
+from database.dependencies import get_db
+from reader.reader_api import ReaderAPI
+
+router = APIRouter(
+    prefix="/reader",
+    tags=["Reader"]
+)
 
 
-class ReaderAPI:
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 
-    def __init__(self, session):
-        self.manager = ReaderManager(session)
 
-    def get_reader(self, reader_id):
-        return self.manager.get_reader(reader_id)
+@router.post("/login")
+def login(
+    data: LoginRequest,
+    db: Session = Depends(get_db),
+):
+    try:
+        api = ReaderAPI(db)
 
-    def get_all_readers(self):
-        return self.manager.get_all_readers()
-
-    def get_active_readers(self):
-        return self.manager.get_active_readers()
-
-    def login(self, email, password):
-        return self.manager.login(email, password)
-
-    def search_reader(self, keyword):
-        return self.manager.search_reader(keyword)
-
-    def create_reader(
-        self,
-        full_name,
-        email,
-        password,
-        phone_number,
-        gender,
-        date_of_birth,
-        librarian_id,
-    ):
-        return self.manager.create_reader(
-            full_name,
-            email,
-            password,
-            phone_number,
-            gender,
-            date_of_birth,
-            librarian_id,
+        reader = api.login(
+            data.email,
+            data.password,
         )
 
-    def update_reader(
-        self,
-        reader_id,
-        full_name,
-        phone_number,
-        gender,
-    ):
-        return self.manager.update_reader(
-            reader_id,
-            full_name,
-            phone_number,
-            gender,
-        )
+        return {
+            "success": True,
+            "reader_id": reader.id,
+            "full_name": reader.full_name,
+            "email": reader.email,
+        }
 
-    def delete_reader(self, reader_id):
-        return self.manager.delete_reader(reader_id)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=401,
+            detail=str(e),
+        )
