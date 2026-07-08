@@ -173,3 +173,29 @@ def delete_book(
     db.commit()
 
     return {"message": "Book deleted successfully"}
+
+
+
+@router.get("/categories")
+def get_book_categories(
+    librarian: Librarian = Depends(get_current_librarian),
+):
+    return {
+        "categories": [
+            "Novel",
+            "Science",
+            "History",
+            "Technology"
+        ]
+    }
+
+
+@router.post("/categories")
+def create_book_category(
+    category: str,
+    librarian: Librarian = Depends(get_current_librarian),
+):
+    return {
+        "message": "Book category created successfully",
+        "category": category
+    }
