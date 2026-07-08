@@ -27,10 +27,15 @@ loginForm.addEventListener("submit", (event) => {
   if (!isValid) return;
 
   const account = username.value.trim().toLowerCase();
+  const passwordValue = password.value.trim();
 
-  if (account.includes("lib") || account.includes("admin")) {
+  if (account === "librarian@librarian.com" && passwordValue === "librarianpassword") {
     window.location.href = "librarian-books.html";
-  } else {
+  } else if (account === "reader@reader.com" && passwordValue === "readerpassword") {
     window.location.href = "reader-search.html";
+  } else {
+    passwordError.textContent = "Wrong username or password. Please try again.";
+    password.value = "";
+    password.focus();
   }
 });
