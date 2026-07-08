@@ -41,7 +41,9 @@ async function register() {
   }
 }
 
-document.getElementById("registerForm")?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  register();
-});
+document
+  .getElementById("registerForm")
+  .addEventListener("submit", async function (e) {
+    e.preventDefault();
+    await register();
+  });

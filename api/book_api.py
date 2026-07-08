@@ -105,7 +105,7 @@ def create_book(
     book = Book(
         title=payload.title,
         author=payload.author,
-publisher=payload.publisher,
+        publisher=payload.publisher,
         publish_year=payload.publish_year,
         category=payload.category,
         description=payload.description,

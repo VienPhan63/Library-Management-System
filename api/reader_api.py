@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from database.dependencies import get_db
-from reader.reader_api import ReaderAPI
+from reader.reader_API import ReaderAPI
 
 router = APIRouter(
     prefix="/reader",

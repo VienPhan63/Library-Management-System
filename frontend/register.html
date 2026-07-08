@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
-    <link rel="stylesheet" href="/frontend/css/base.css">
-    <link rel="stylesheet" href="/frontend/css/membership.css">
+    <link rel="stylesheet" href="/frontend/css/base.css" />
+    <link rel="stylesheet" href="/frontend/css/membership.css" />
   </head>
   <body class="membership-body">
     <main class="membership-wrap">
@@ -23,15 +23,18 @@
         </div>
 
         <form id="registerForm" class="membership-form">
-          <label>Full Name <b>*</b>
-            <input id="full_name" placeholder="Type your full name" required>
+          <label
+            >Full Name <b>*</b>
+            <input id="full_name" placeholder="Type your full name" required />
           </label>
 
           <div class="membership-grid">
-            <label>Date of Birth <b>*</b>
-              <input id="date_of_birth" type="date" required>
+            <label
+              >Date of Birth <b>*</b>
+              <input id="date_of_birth" type="date" required />
             </label>
-            <label>Gender <b>*</b>
+            <label
+              >Gender <b>*</b>
               <select id="gender" required>
                 <option value="">Select gender</option>
                 <option>Male</option>
@@ -42,41 +45,80 @@
           </div>
 
           <div class="membership-grid">
-            <label>ID Card Number <b>*</b>
-              <input id="national_id" placeholder="Type your ID number" required>
+            <label
+              >ID Card Number <b>*</b>
+              <input
+                id="national_id"
+                placeholder="Type your ID number"
+                required
+              />
             </label>
-            <label>Phone Number <b>*</b>
-              <input id="phone_number" placeholder="Type your phone number" required>
+            <label
+              >Phone Number <b>*</b>
+              <input
+                id="phone_number"
+                placeholder="Type your phone number"
+                required
+              />
             </label>
           </div>
 
-          <label>Email <b>*</b>
-            <input id="email" type="email" placeholder="example@gmail.com" required>
+          <label
+            >Email <b>*</b>
+            <input
+              id="email"
+              type="email"
+              placeholder="example@gmail.com"
+              required
+            />
           </label>
 
           <div class="membership-grid">
-            <label>Password <b>*</b>
-              <input id="password" type="password" placeholder="Password" required>
+            <label
+              >Password <b>*</b>
+              <input
+                id="password"
+                type="password"
+                placeholder="Password"
+                required
+              />
             </label>
-            <label>Confirm Password <b>*</b>
-              <input id="confirm_password" type="password" placeholder="Confirm Password" required>
+            <label
+              >Confirm Password <b>*</b>
+              <input
+                id="confirm_password"
+                type="password"
+                placeholder="Confirm Password"
+                required
+              />
             </label>
           </div>
 
           <label class="membership-check">
-            <input id="agree_terms" type="checkbox" required>
-            <span>I certify that the information provided is accurate and agree to the system's library card terms of use.</span>
+            <input id="agree_terms" type="checkbox" required />
+            <span
+              >I certify that the information provided is accurate and agree to
+              the system's library card terms of use.</span
+            >
           </label>
 
-          <button class="membership-submit" type="submit">Submit Registration</button>
-          <p class="membership-note">Your account will remain in "Pending" status until confirmed by the Librarian. You will receive a notification once approved.</p>
+          <button class="membership-submit" type="submit">
+            Submit Registration
+          </button>
+          <p class="membership-note">
+            Your account will remain in "Pending" status until confirmed by the
+            Librarian. You will receive a notification once approved.
+          </p>
         </form>
 
-        <div class="membership-login">Have an account? <a href="login.html">Log in</a></div>
+        <div class="membership-login">
+          Have an account? <a href="/frontend/login.html">Log in</a>
+        </div>
       </section>
 
       <footer class="membership-footer">
-        (c) 2026 Library Management System. All rights reserved. | Terms of Service | Privacy Policy
+        (c) 2026 Library Management System. All rights reserved. | Terms of
+        Service | Privacy Policy
       </footer>
     </main>
 

@@ -16,7 +16,9 @@ def test_repository():
 
         librarian = Librarian(
             full_name="Dương Nguyễn",
-            phone_number="0345678900"
+            phone_number="0345678900",
+            email="test1@test.com",
+            password="123456"
         )
 
         session.add(librarian)
@@ -36,6 +38,7 @@ def test_repository():
                 available_quantity=10,
                 status=BookStatus.AVAILABLE,
                 librarian_id=librarian.id,
+                price=100000
             ),
             Book(
                 title="Python Advanced",
@@ -48,6 +51,7 @@ def test_repository():
                 available_quantity=0,
                 status=BookStatus.UNAVAILABLE,
                 librarian_id=librarian.id,
+                price=100000
             ),
         Book(
                 title="Java Core",
@@ -60,6 +64,7 @@ def test_repository():
                 available_quantity=3,
                 status=BookStatus.AVAILABLE,
                 librarian_id=librarian.id,
+                price=100000
             ),
         ]
 
